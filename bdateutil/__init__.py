@@ -16,6 +16,7 @@ from datetime import date as basedate
 from datetime import datetime as basedatetime
 from datetime import time as basetime
 
+import bdateutil
 from bdateutil.parser import parse
 from bdateutil.relativedelta import relativedelta
 from bdateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
@@ -24,7 +25,9 @@ from bdateutil.rrule import *
 
 def isbday(dt, holidays=None):
     if holidays is None:
-        holidays = getattr(isbday, 'holidays', ())
+        holidays = getattr(isbday, 'holidays', None)
+    if holidays is None:
+        holidays = getattr(bdateutil, 'holidays', ())
     dt = parse(dt)
     return not (dt.weekday() in (5, 6) or dt in holidays)
 

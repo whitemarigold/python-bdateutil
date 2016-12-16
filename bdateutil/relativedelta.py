@@ -17,6 +17,7 @@ from dateutil.relativedelta import relativedelta as rd
 from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
 import six
 
+import bdateutil
 from bdateutil.parser import parse
 
 
@@ -27,7 +28,9 @@ class relativedelta(rd):
                  btstart=None, btend=None, *args, **kwargs):
         self.holidays = holidays
         if self.holidays is None:
-            self.holidays = getattr(relativedelta, 'holidays', ())
+            self.holidays = getattr(relativedelta, 'holidays', None)
+        if self.holidays is None:
+            self.holidays = getattr(bdateutil, 'holidays', ())
         self.btstart = btstart
         if self.btstart is None:
             self.btstart = getattr(relativedelta, 'btstart', time(9))

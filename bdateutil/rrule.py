@@ -13,6 +13,7 @@ from dateutil.rrule import *
 from dateutil.rrule import rrule as rrulebase
 from dateutil.rrule import _rrulestr as rrulestrbase
 
+import bdateutil
 from bdateutil import parse
 
 
@@ -24,7 +25,9 @@ class rrule(rrulebase):
     def __init__(self, freq, holidays=None, **kwargs):
         self.holidays = holidays
         if self.holidays is None:
-            self.holidays = getattr(rrule, 'holidays', ())
+            self.holidays = getattr(rrule, 'holidays', None)
+        if self.holidays is None:
+            self.holidays = getattr(bdateutil, 'holidays', ())
         if 'dtstart' in kwargs:
             kwargs['dtstart'] = parse(kwargs['dtstart'])
         if 'until' in kwargs:

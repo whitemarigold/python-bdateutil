@@ -149,9 +149,19 @@ following additional features:
     datetime.date(2014, 7, 8)
 
     # Set relativedelta to always use holidays
-    >>> relativedelta.holidays = holidays.UnitedStates()
+    >>> relativedelta.holidays = UnitedStates()
     >>> date(2014, 7, 3) + relativedelta(bdays=+2)
     datetime.date(2014, 7, 8)
+
+    # Set default holidays for all bdateutil functions
+    # (relativedelta, rrule, isbday)
+    # This will be overridden by relativedelta.holidays which will be
+    # overridden if passing holidays kwargs to relativedelta()
+    >>> import bdateutil
+    >>> bdateutil.holidays = UnitedStates()
+
+    # Remove default holidays from bdateutil functions
+    >>> del bdateutil.holidays
 
 5. A new function :code:`isbday` which returns :code:`True` if the argument
    passed to it falls on a business day and :code:`False` if it is a weekend or

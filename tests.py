@@ -14,6 +14,7 @@ import unittest
 
 import holidays
 
+import bdateutil
 from bdateutil import isbday
 from bdateutil import relativedelta
 from bdateutil import parse
@@ -37,10 +38,17 @@ class TestIsBday(unittest.TestCase):
                          holidays=holidays.US()))
         self.assertFalse(isbday(datetime(2014, 1, 1, 17, 30),
                          holidays=holidays.US()))
-        isbday.holidays = holidays.US()
+        bdateutil.holidays = holidays.Canada()
+        self.assertFalse(isbday(date(2014, 7, 1)))
+        self.assertTrue(isbday(date(2014, 7, 4)))
         self.assertFalse(isbday(date(2014, 1, 1)))
+        isbday.holidays = holidays.US()
+        self.assertTrue(isbday(date(2014, 7, 1)))
         self.assertFalse(isbday(date(2014, 7, 4)))
-        self.assertTrue(isbday(date(2014, 7, 4), holidays=holidays.CA()))
+        del isbday.holidays
+        self.assertTrue(isbday(date(2014, 7, 1), holidays=holidays.US()))
+        self.assertFalse(isbday(date(2014, 7, 4), holidays=holidays.US()))
+        del bdateutil.holidays
 
 
 class TestRelativeDelta(unittest.TestCase):
@@ -71,11 +79,17 @@ class TestRelativeDelta(unittest.TestCase):
                                        holidays=holidays.US()),
                          relativedelta(days=11, hours=18, minutes=22,
                                        bdays=6, bhours=8, bminutes=0))
+        bdateutil.holidays = holidays.CA()
+        self.assertEqual(relativedelta(datetime(2015, 1, 20, 21, 22),
+                                       datetime(2015, 1, 9, 3, 0)),
+                         relativedelta(days=11, hours=18, minutes=22,
+                                       bdays=7, bhours=8, bminutes=0))
         relativedelta.holidays = holidays.US()
         self.assertEqual(relativedelta(datetime(2015, 1, 20, 21, 22),
                                        datetime(2015, 1, 9, 3, 0)),
                          relativedelta(days=11, hours=18, minutes=22,
                                        bdays=6, bhours=8, bminutes=0))
+        del bdateutil.holidays
         del relativedelta.holidays
         self.assertEqual(relativedelta(time(3, 40), time(2, 37)),
                          relativedelta(hours=1, minutes=3))
@@ -310,13 +324,20 @@ class TestRRule(unittest.TestCase):
                           datetime(2015, 7, 2, 0, 0),
                           datetime(2015, 7, 6, 0, 0),
                           datetime(2015, 7, 7, 0, 0)])
+        del rrule.holidays
+        bdateutil.holidays = holidays.US()
+        self.assertEqual(list(rrule(BDAILY, count=4, dtstart="2015-07-01")),
+                         [datetime(2015, 7, 1, 0, 0),
+                          datetime(2015, 7, 2, 0, 0),
+                          datetime(2015, 7, 6, 0, 0),
+                          datetime(2015, 7, 7, 0, 0)])
+        del bdateutil.holidays
         self.assertEqual(list(rrule(BDAILY, count=4, dtstart="2015-07-01",
                               holidays=holidays.CA())),
                          [datetime(2015, 7, 2, 0, 0),
                           datetime(2015, 7, 3, 0, 0),
                           datetime(2015, 7, 6, 0, 0),
                           datetime(2015, 7, 7, 0, 0)])
-        del rrule.holidays
 
 
 class TestDateTime(unittest.TestCase):
