@@ -15,9 +15,6 @@ imports with :code:`bdateutil`.
 .. image:: http://img.shields.io/pypi/v/bdateutil.svg
     :target: https://pypi.python.org/pypi/bdateutil
 
-.. image:: http://img.shields.io/pypi/dm/bdateutil.svg
-    :target: https://pypi.python.org/pypi/bdateutil
-
 .. image:: http://img.shields.io/pypi/l/bdateutil.svg
     :target: https://github.com/ryanss/bdateutil/blob/master/LICENSE
 
@@ -27,50 +24,40 @@ Example Usage
 
 .. code-block:: python
 
-    # Test if a date is a business day
-    >>> from bdateutil import isbday
-    >>> isbday(date(2014, 1, 1))
-    True
-
-    # Date parameters are no longer limited to datetime objects
-    >>> isbday("2014-01-01")
-    True
-    >>> isbday("1/1/2014")
-    True
-    >>> isbday(1388577600)  # Unix timestamp = Jan 1, 2014
-    True
+    # Increment date by two business days
+    >>> from bdateutil import date, relativedelta
+    >>> date(2016, 6, 30) + relativedelta(bdays=+2)
+    datetime.date(2016, 7, 4)
 
     # Take into account U.S. statutory holidays
     >>> import holidays
-    >>> isbday("2014-01-01", holidays=holidays.US())
-    False
+    >>> date(2016, 6, 30) + relativedelta(bdays=+2, holidays=holidays.US())
+    datetime.date(2016, 7, 5)
 
-    # Increment date by two business days
+    # Take U.S. holidays into account by default whenever
+    # relativedelta() function is used
     >>> from bdateutil import relativedelta
-    >>> date(2014, 7, 3) + relativedelta(bdays=+2)
-    datetime.date(2014, 7, 7)
+    >>> relativedelta.holidays = holidays.US()
 
-    # Any arguments that take a date/datetime object now accept
-    # strings/unicode/bytes in any encoding and integer/float timestamps.
-    # All dateutil functions now also take an optional `holidays` argument
-    # for helping to work with business days.
-    >>> "2014-07-03" + relativedelta(bdays=+2, holidays=holidays.US())
-    datetime.date(2014, 7, 8)
+    # Take U.S. holidays into acccount by default whenever any bdateutil
+    # module function is used
+    # holidays attributes work simimlar to CSS: a holidays kwarg takes
+    # precedent over a function default, which takes precedent over the
+    # module default
+    >>> import bdateutil
+    >>> bdateutil.holidays = holidays.US()
 
     # Determine how many business days between two dates
-    >>> relativedelta("2014-07-07", date(2014, 7, 3))
-    relativedelta(days=+4, bdays=+2)
-    # Take into account Canadian statutory holidays
-    >>> from holidays import Canada
-    >>> relativedelta('2014-07-07', '07/03/2014', holidays=Canada())
-    relativedelta(days=+4, bdays=+1)
+    >>> from bdateutil import relativedelta
+    >>> relativedelta.holidays = holidays.US()
+    >>> relativedelta(date(2016, 7, 5), date(2016, 6, 30))
+    relativedelta(days=+5, bdays=+2)
 
     # Get a list of the next 10 business days starting 2014-01-01
     >>> from bdateutil import rrule, BDAILY
     >>> list(rrule(BDAILY, count=10, dtstart=date(2014, 1, 1)))
-    # Take into account British Columbia, Canada statutory holidays
-    >>> list(rrule(BDAILY, count=10, dtstart=date(2014, 1, 1),
-                   holidays=Canada(prov='BC')))
+
+    # Please read detailed documentation below for a complete list of features
 
 
 Install
