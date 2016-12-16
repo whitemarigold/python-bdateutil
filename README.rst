@@ -1,22 +1,22 @@
-=========
-bdateutil
-=========
+================
+python-bdateutil
+================
 
 Adds business day logic and improved data type flexibility to python-dateutil.
 100% backwards compatible with python-dateutil, simply replace :code:`dateutil`
 imports with :code:`bdateutil`.
 
-.. image:: http://img.shields.io/travis/ryanss/bdateutil.svg
-    :target: https://travis-ci.org/ryanss/bdateutil
+.. image:: http://img.shields.io/travis/ryanss/python-bdateutil.svg
+    :target: https://travis-ci.org/ryanss/python-bdateutil
 
-.. image:: http://img.shields.io/coveralls/ryanss/bdateutil.svg
-    :target: https://coveralls.io/r/ryanss/bdateutil
+.. image:: http://img.shields.io/coveralls/ryanss/python-bdateutil.svg
+    :target: https://coveralls.io/r/ryanss/python-bdateutil
 
 .. image:: http://img.shields.io/pypi/v/bdateutil.svg
     :target: https://pypi.python.org/pypi/bdateutil
 
 .. image:: http://img.shields.io/pypi/l/bdateutil.svg
-    :target: https://github.com/ryanss/bdateutil/blob/master/LICENSE
+    :target: https://github.com/ryanss/python-bdateutil/blob/master/LICENSE
 
 
 Example Usage
@@ -79,12 +79,12 @@ If the above fails, please use easy_install instead:
 Documentation
 -------------
 
-This section will outline the additional functionality of bdateutil only. For
-full documentation on the features provided by python-dateutil please see its
-documentation at https://dateutil.readthedocs.org.
+This section will outline the additional functionality of python-bdateutil
+only. For full documentation on the features provided by python-dateutil please
+see its documentation at https://dateutil.readthedocs.org.
 
-bdateutil is 100% backwards compatible with python-dateutil. You can replace
-:code:`dateutil` with :code:`bdateutil` across your entire project and
+python-bdateutil is 100% backwards compatible with python-dateutil. You can
+replace :code:`dateutil` with :code:`bdateutil` across your entire project and
 everything will continue to work the same but you will have access to the
 following additional features:
 
@@ -300,7 +300,7 @@ The latest development version can be installed directly from GitHub:
 
 .. code-block:: bash
 
-    $ pip install --upgrade https://github.com/ryanss/bdateutil/tarball/master
+    $ pip install --upgrade https://github.com/ryanss/python-bdateutil/tarball/master
 
 
 Running Tests
@@ -326,8 +326,8 @@ Coverage
 Contributions
 -------------
 
-.. _issues: https://github.com/ryanss/bdateutil/issues
-.. __: https://github.com/ryanss/bdateutil/pulls
+.. _issues: https://github.com/ryanss/python-bdateutil/issues
+.. __: https://github.com/ryanss/python-bdateutil/pulls
 
 Issues_ and `Pull Requests`__ are always welcome.
 
@@ -335,7 +335,7 @@ Issues_ and `Pull Requests`__ are always welcome.
 License
 -------
 
-.. __: https://github.com/ryanss/bdateutil/raw/master/LICENSE
+.. __: https://github.com/ryanss/python-bdateutil/raw/master/LICENSE
 
 Code and documentation are available according to the MIT License
 (see LICENSE__).
