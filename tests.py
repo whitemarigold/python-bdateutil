@@ -332,8 +332,8 @@ class TestDateTime(unittest.TestCase):
         self.assertEqual(date.today(days=+1),
                          dt.date.today() + relativedelta(days=+1))
         self.assertEqual(date.today(bdays=+200, holidays=holidays.US()),
-                         dt.date.today()
-                         + relativedelta(bdays=+200, holidays=holidays.US()))
+                         dt.date.today() +
+                         relativedelta(bdays=+200, holidays=holidays.US()))
         relativedelta.holidays = holidays.US()
         self.assertEqual(date.today(bdays=+200),
                          dt.date.today() + relativedelta(bdays=+200))
