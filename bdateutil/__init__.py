@@ -56,14 +56,14 @@ class date(basedate):
 
 class datetime(basedatetime):
 
-    def __new__(self, *args, **kwargs):
+    def __new__(cls, *args, **kwargs):
         if len(args) == 1:
             args = parse(args[0]).timetuple()[:6]
         if len(args) > 2:
             if args[2] == 99:
                 args = list(args)
                 args[2] = calendar.monthrange(args[0], args[1])[1]
-        return basedatetime.__new__(self, *args, **kwargs)
+        return basedatetime.__new__(cls, *args, **kwargs)
 
     @staticmethod
     def now(**kwargs):
