@@ -15,11 +15,12 @@ import calendar
 from datetime import date as basedate
 from datetime import datetime as basedatetime
 from datetime import time as basetime
+from datetime import timedelta, tzinfo
 
 import bdateutil
-from bdateutil.parser import parse
+from bdateutil.parser import parse, parserinfo
 from bdateutil.relativedelta import relativedelta
-from bdateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
+from bdateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU, weekday
 from bdateutil.rrule import *
 
 

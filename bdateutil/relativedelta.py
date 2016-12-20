@@ -14,7 +14,7 @@ from datetime import date, datetime, time
 import math
 
 from dateutil.relativedelta import relativedelta as rd
-from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
+from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU, weekday
 import six
 
 import bdateutil
@@ -33,10 +33,14 @@ class relativedelta(rd):
             self.holidays = getattr(bdateutil, 'holidays', ())
         self.btstart = btstart
         if self.btstart is None:
-            self.btstart = getattr(relativedelta, 'btstart', time(9))
+            self.btstart = getattr(relativedelta, 'btstart', None)
+        if self.btstart is None:
+            self.btstart = getattr(bdateutil, 'btstart', time(9))
         self.btend = btend
         if self.btend is None:
-            self.btend = getattr(relativedelta, 'btend', time(17))
+            self.btend = getattr(relativedelta, 'btend', None)
+        if self.btend is None:
+            self.btend = getattr(bdateutil, 'btend', time(17))
         if dt1 and dt2:
             # Convert to datetime objects
             dt1 = parse(dt1)
@@ -107,7 +111,7 @@ class relativedelta(rd):
     def __add__(self, other):
         if isinstance(other, relativedelta):
             ret = rd.__add__(self, other)
-            ret.__class__ = relativedelta
+            ret.__class__ = self.__class__
             for attr in ('bdays', 'bhours', 'bminutes', 'bseconds'):
                 if getattr(self, attr, None) is not None:
                     if getattr(other, attr, None) is not None:
@@ -118,12 +122,20 @@ class relativedelta(rd):
                 elif getattr(other, attr, None) is not None:
                     setattr(ret, attr, getattr(other, attr))
             return ret
-        ret = parse(other)
+        ret = other
         # If we are adding any time (not just dates) the ret object to return
         # must be a datetime object; a date object will not work
-        if not isinstance(ret, datetime) \
-                and (self.bhours or self.bminutes or self.bseconds):
+        if isinstance(ret, date) and not isinstance(ret, datetime) \
+                and (getattr(self, 'bhours', 0) or
+                     getattr(self, 'bminutes', 0) or
+                     getattr(self, 'bseconds', 0) or
+                     getattr(self, 'hours', 0) or
+                     getattr(self, 'minutes', 0) or
+                     getattr(self, 'seconds', 0) or
+                     getattr(self, 'microseconds', 0)):
             ret = datetime.combine(ret, datetime.min.time())
+        if isinstance(ret, time):
+            ret = datetime.combine(date.today(), ret)
         for attr in ('bseconds', 'bminutes', 'bhours', 'bdays'):
             if getattr(self, attr, None) is not None:
                 while ret.weekday() in (5, 6) or ret in self.holidays:
@@ -143,14 +155,17 @@ class relativedelta(rd):
                              ret.time() >= self.btend):
                         ret += rd(**{attr[1:]: a})
                     i -= a
-        return rd.__add__(self, ret)
+        ret = rd.__add__(self, ret)
+        if isinstance(other, time):
+            return ret.time()
+        return ret
 
     def __radd__(self, other):
         return self.__add__(other)
 
     def __sub__(self, other):
         ret = rd.__sub__(self, other)
-        ret.__class__ = relativedelta
+        ret.__class__ = self.__class__
         for attr in ('bdays', 'bhours', 'bminutes', 'bseconds'):
             if getattr(self, attr, None) is not None:
                 setattr(ret, attr, getattr(self, attr))
@@ -161,7 +176,6 @@ class relativedelta(rd):
 
     def __rsub__(self, other):
         if getattr(self, 'bdays', None) is not None:
-            other = parse(other)
             if self.bdays == 0:
                 while other.weekday() in (5, 6) or other in self.holidays:
                     other += rd(days=-1)
@@ -169,23 +183,23 @@ class relativedelta(rd):
 
     def __neg__(self):
         bdays = -self.bdays if self.bdays is not None else None
-        return relativedelta(years=-self.years,
-                             months=-self.months,
-                             days=-self.days,
-                             bdays=bdays,
-                             hours=-self.hours,
-                             minutes=-self.minutes,
-                             seconds=-self.seconds,
-                             microseconds=-self.microseconds,
-                             leapdays=self.leapdays,
-                             year=self.year,
-                             month=self.month,
-                             day=self.day,
-                             weekday=self.weekday,
-                             hour=self.hour,
-                             minute=self.minute,
-                             second=self.second,
-                             microsecond=self.microsecond)
+        return self.__class__(years=-self.years,
+                              months=-self.months,
+                              days=-self.days,
+                              bdays=bdays,
+                              hours=-self.hours,
+                              minutes=-self.minutes,
+                              seconds=-self.seconds,
+                              microseconds=-self.microseconds,
+                              leapdays=self.leapdays,
+                              year=self.year,
+                              month=self.month,
+                              day=self.day,
+                              weekday=self.weekday,
+                              hour=self.hour,
+                              minute=self.minute,
+                              second=self.second,
+                              microsecond=self.microsecond)
 
     def __bool__(self):
         if self.bdays is None:
@@ -195,25 +209,28 @@ class relativedelta(rd):
     __nonzero__ = __bool__
 
     def __mul__(self, other):
-        f = float(other)
+        try:
+            f = float(other)
+        except:
+            return other
         bdays = int(self.bdays * f) if self.bdays is not None else None
-        return relativedelta(years=int(self.years * f),
-                             months=int(self.months * f),
-                             days=int(self.days * f),
-                             bdays=bdays,
-                             hours=int(self.hours * f),
-                             minutes=int(self.minutes * f),
-                             seconds=int(self.seconds * f),
-                             microseconds=int(self.microseconds * f),
-                             leapdays=self.leapdays,
-                             year=self.year,
-                             month=self.month,
-                             day=self.day,
-                             weekday=self.weekday,
-                             hour=self.hour,
-                             minute=self.minute,
-                             second=self.second,
-                             microsecond=self.microsecond)
+        return self.__class__(years=int(self.years * f),
+                              months=int(self.months * f),
+                              days=int(self.days * f),
+                              bdays=bdays,
+                              hours=int(self.hours * f),
+                              minutes=int(self.minutes * f),
+                              seconds=int(self.seconds * f),
+                              microseconds=int(self.microseconds * f),
+                              leapdays=self.leapdays,
+                              year=self.year,
+                              month=self.month,
+                              day=self.day,
+                              weekday=self.weekday,
+                              hour=self.hour,
+                              minute=self.minute,
+                              second=self.second,
+                              microsecond=self.microsecond)
 
     def __eq__(self, other):
         for attr in ('bdays', 'bhours', 'bminutes', 'bseconds'):
@@ -233,7 +250,7 @@ class relativedelta(rd):
                      "bhours", "bminutes", "bseconds"]:
             value = getattr(self, attr, None)
             if value:
-                l.append("%s=%+d" % (attr, value))
+                l.append("%s=%+g" % (attr, value))
         for attr in ["year", "month", "day", "weekday",
                      "hour", "minute", "second", "microsecond"]:
             value = getattr(self, attr)

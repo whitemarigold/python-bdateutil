@@ -4,7 +4,8 @@ python-bdateutil
 
 Adds business day logic and improved data type flexibility to python-dateutil.
 100% backwards compatible with python-dateutil, simply replace :code:`dateutil`
-imports with :code:`bdateutil`.
+imports with :code:`bdateutil` and, optionally, :code:`datetime` with
+:code:`bdateutil`.
 
 .. image:: http://img.shields.io/travis/ryanss/python-bdateutil.svg
     :target: https://travis-ci.org/ryanss/python-bdateutil
@@ -103,24 +104,24 @@ following additional features:
 .. code-block:: python
 
     # Verbose
-    >>> dt = "2014-11-15"
+    >>> dt = date("2014-11-15")
     >>> while not isbday(dt):
     >>>     dt += relativedelta(days=1)
     >>> print dt
-    datetime(2014, 11, 17, 0, 0)
+    datetime.date(2014, 11, 17)
 
     # Nicer
-    >>> "2014-11-15" + relativedelta(bdays=0)
-    datetime(2014, 11, 17, 0, 0)
+    >>> date("2014-11-15") + relativedelta(bdays=0)
+    datetime.date(2014, 11, 17, 0, 0)
 
     # Subtract the relativedelta to go back to the previous business day,
     # if not a business day
-    >>> "2014-11-15" - relativedelta(bdays=0)
-    datetime(2014, 11, 14, 0, 0)
+    >>> date("2014-11-15") - relativedelta(bdays=0)
+    datetime.date(2014, 11, 14, 0, 0)
 
     # If the date is already a business day, no changes
-    >>> "2014-11-13" + relativedelta(bdays=0)
-    datetime(2014, 11, 13, 0, 0)
+    >>> date("2014-11-13") + relativedelta(bdays=0)
+    datetime.date(2014, 11, 13)
 
 3. When passing two datetime arguments to relativedelta, the resulting
    relativedelta object will contain a :code:`bdays` attribute with the number
@@ -214,7 +215,7 @@ following additional features:
     >>> relativedelta('2014-07-07', '2014-07-03')
     relativedelta(days=+4, bdays=+2)
 
-    >>> 1388577600 + relativedelta(days=+2)
+    >>> date(1388577600) + relativedelta(days=+2)
     date(2014, 1, 3)
 
 7. The :code:`rrule` feature has a new :code:`BDAILY` option for use as the :code:`freq` argument.
@@ -283,10 +284,6 @@ following additional features:
     >>> datetime.now(bdays=-45) == datetime.now() - relativedelta(bdays=45)
     >>> time.now(hours=+1)
     datetime.time(15, 52, 57, 984686)
-    # time.now(**kwargs) will return a datetime.time object if the resulting
-    # time is still in the current day or a datetime.datetime object if the
-    # result moves to another day
-    >>> time.now(days=+1) == datetime.now() + relativedelta(days=1)
     # date.today(), datetime.now() and time.now() use the optional default
     # holidays setting from relativedelta.holidays if they are set
 
@@ -320,7 +317,7 @@ Running Tests
 
     $ pip install flake8
     $ flake8 bdateutil/*.py tests.py --ignore=F401,F403
-    $ python tests.py
+    $ python -m unittest discover tests/
 
 
 Coverage
@@ -329,7 +326,7 @@ Coverage
 .. code-block:: bash
 
     $ pip install coverage
-    $ coverage run --omit=*site-packages* tests.py
+    $ coverage run --omit=*site-packages*,*dateutil_tests* -m unittest discover tests/
     $ coverage report
 
 

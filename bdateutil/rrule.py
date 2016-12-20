@@ -10,6 +10,7 @@
 
 
 from dateutil.rrule import *
+from dateutil.rrule import weekday
 from dateutil.rrule import rrule as rrulebase
 from dateutil.rrule import _rrulestr as rrulestrbase
 
