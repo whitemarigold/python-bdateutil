@@ -316,7 +316,7 @@ Running Tests
 .. code-block:: bash
 
     $ pip install flake8
-    $ flake8 bdateutil/*.py tests.py --ignore=F401,F403
+    $ flake8 bdateutil/*.py tests/bdateutil_tests.py --ignore=F401,E402,F403,F405
     $ python -m unittest discover tests/
 
 
