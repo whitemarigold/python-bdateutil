@@ -287,6 +287,12 @@ following additional features:
     # date.today(), datetime.now() and time.now() use the optional default
     # holidays setting from relativedelta.holidays if they are set
 
+    # date and datetime objects have a `week` property giving the number of the
+    # week in the year
+    >>> d = date(2016, 12, 20)
+    >>> d.week
+    51
+
     # Pass 99 as the day to return the last day of the month
     >>> date(2015, 2, 99)
     date(2015, 2, 28)

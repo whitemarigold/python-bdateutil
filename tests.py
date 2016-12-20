@@ -389,10 +389,17 @@ class TestDateTime(unittest.TestCase):
         self.assertEqual(relativedelta(time(2, 30), time(3, 40)),
                          relativedelta(hours=-1, minutes=-10))
 
+    def test_week(self):
+        self.assertEqual(date("2016-12-20").week, 51)
+
     def test_eomday(self):
         self.assertEqual(date("2015-02-15").eomday, dt.date(2015, 2, 28))
         self.assertEqual(datetime("2015-03-01 12:34").eomday,
                          dt.datetime(2015, 3, 31, 12, 34))
+        d1 = date("2016-12-20") + relativedelta(days=1)
+        self.assertEqual(d1.eomday, date(2016, 12, 31))
+        dt1 = datetime("2016-12-20 1:22") + relativedelta(days=1)
+        self.assertEqual(dt1.eomday, datetime(2016, 12, 31, 1, 22))
 
 
 if __name__ == "__main__":

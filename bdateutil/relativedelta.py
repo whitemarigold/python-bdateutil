@@ -122,40 +122,51 @@ class relativedelta(rd):
                 elif getattr(other, attr, None) is not None:
                     setattr(ret, attr, getattr(other, attr))
             return ret
-        ret = other
         # If we are adding any time (not just dates) the ret object to return
         # must be a datetime object; a date object will not work
-        if isinstance(ret, date) and not isinstance(ret, datetime) \
+        if isinstance(other, date) and not isinstance(other, datetime) \
                 and (getattr(self, 'bhours', 0) or
                      getattr(self, 'bminutes', 0) or
                      getattr(self, 'bseconds', 0) or
                      getattr(self, 'hours', 0) or
                      getattr(self, 'minutes', 0) or
                      getattr(self, 'seconds', 0) or
-                     getattr(self, 'microseconds', 0)):
-            ret = datetime.combine(ret, datetime.min.time())
-        if isinstance(ret, time):
-            ret = datetime.combine(date.today(), ret)
+                     getattr(self, 'microseconds', 0) or
+                     getattr(self, 'hour', 0) or
+                     getattr(self, 'minute', 0) or
+                     getattr(self, 'second', 0) or
+                     getattr(self, 'microsecond', 0)):
+            other = datetime.combine(other, datetime.min.time())
+        if isinstance(other, time):
+            other = datetime.combine(date.today(), other)
         for attr in ('bseconds', 'bminutes', 'bhours', 'bdays'):
             if getattr(self, attr, None) is not None:
-                while ret.weekday() in (5, 6) or ret in self.holidays:
-                    ret += rd(days=+1)
+                while other.weekday() in (5, 6) or other in self.holidays:
+                    other += rd(days=+1)
                 while attr != "bdays" and \
-                        (ret.time() < self.btstart or
-                         ret.time() >= self.btend):
-                    ret += rd(**{attr[1:]: +1})
+                        (other.time() < self.btstart or
+                         other.time() >= self.btend):
+                    other += rd(**{attr[1:]: +1})
                 i = getattr(self, attr)
                 a = +1 if i > 0 else -1
                 while i != 0:
-                    ret += rd(**{attr[1:]: a})
-                    while ret.weekday() in (5, 6) or ret in self.holidays:
-                        ret += rd(days=a)
+                    other += rd(**{attr[1:]: a})
+                    while other.weekday() in (5, 6) or other in self.holidays:
+                        other += rd(days=a)
                     while attr != "bdays" and \
-                            (ret.time() < self.btstart or
-                             ret.time() >= self.btend):
-                        ret += rd(**{attr[1:]: a})
+                            (other.time() < self.btstart or
+                             other.time() >= self.btend):
+                        other += rd(**{attr[1:]: a})
                     i -= a
-        ret = rd.__add__(self, ret)
+        ret = rd.__add__(self, other)
+        # Ensure when relativedelta is added to `other` object that it returns
+        # the same type of object as `other`
+        if ret.__class__ != other.__class__:
+            if ret.__class__ == date:
+                ret = other.__class__(*(ret.timetuple()[:3]))
+            elif ret.__class__ == datetime:
+                ret = other.__class__(*(ret.timetuple()[:6] +
+                                        (ret.microsecond, ret.tzinfo)))
         if isinstance(other, time):
             return ret.time()
         return ret

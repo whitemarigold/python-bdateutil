@@ -35,18 +35,22 @@ def isbday(dt, holidays=None):
 
 class date(basedate):
 
-    def __new__(self, *args, **kwargs):
+    def __new__(cls, *args, **kwargs):
         if len(args) == 1:
             args = parse(args[0]).timetuple()[:3]
         if len(args) > 2:
             if args[2] == 99:
                 args = list(args)
                 args[2] = calendar.monthrange(args[0], args[1])[1]
-        return basedate.__new__(self, *args, **kwargs)
+        return basedate.__new__(cls, *args, **kwargs)
 
     @staticmethod
     def today(**kwargs):
         return basedate.today() + relativedelta(**kwargs)
+
+    @property
+    def week(self):
+        return self.isocalendar()[1]
 
     @property
     def eomday(self):
@@ -68,6 +72,10 @@ class datetime(basedatetime):
     @staticmethod
     def now(**kwargs):
         return basedatetime.now() + relativedelta(**kwargs)
+
+    @property
+    def week(self):
+        return self.isocalendar()[1]
 
     @property
     def eomday(self):
