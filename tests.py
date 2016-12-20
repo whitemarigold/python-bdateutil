@@ -14,6 +14,14 @@ import unittest
 
 import holidays
 
+# `test_dateutil` directory contains tests from python-dateutil 2.6.0
+from test_dateutil.test_easter import *
+from test_dateutil.test_imports import *
+from test_dateutil.test_parser import *
+from test_dateutil.test_relativedelta import *
+from test_dateutil.test_rrule import *
+from test_dateutil.test_tz import *
+
 import bdateutil
 from bdateutil import isbday
 from bdateutil import easter
@@ -111,20 +119,20 @@ class TestRelativeDelta(unittest.TestCase):
                             bhours=+11, bminutes=+1, bseconds=+11,
                             hours=+5, minutes=+11, seconds=+9)
         self.assertEqual(rd3 + rd4, rd5)
-        self.assertEqual("2014-01-01" + relativedelta(weekday=FR),
-                         datetime(2014, 1, 3))
-        self.assertEqual("2014-11-15" + relativedelta(bdays=1),
-                         datetime(2014, 11, 18))
+        self.assertEqual(date("2014-01-01") + relativedelta(weekday=FR),
+                         date(2014, 1, 3))
+        self.assertEqual(datetime("2014-11-15 1:23") + relativedelta(bdays=1),
+                         datetime(2014, 11, 18, 1, 23))
 
     def test_bdays_zero(self):
-        self.assertEqual("2014-11-15" + relativedelta(bdays=0),
-                         datetime(2014, 11, 17))
-        self.assertEqual("2014-11-17" + relativedelta(bdays=0),
-                         datetime(2014, 11, 17))
-        self.assertEqual("2014-11-15" - relativedelta(bdays=0),
-                         datetime(2014, 11, 14))
-        self.assertEqual("2014-11-14" - relativedelta(bdays=0),
-                         datetime(2014, 11, 14))
+        self.assertEqual(date("2014-11-15") + relativedelta(bdays=0),
+                         date(2014, 11, 17))
+        self.assertEqual(date("2014-11-17") + relativedelta(bdays=0),
+                         date(2014, 11, 17))
+        self.assertEqual(date("2014-11-15") - relativedelta(bdays=0),
+                         date(2014, 11, 14))
+        self.assertEqual(date("2014-11-14") - relativedelta(bdays=0),
+                         date(2014, 11, 14))
 
     def test_radd(self):
         self.assertEqual(date(2014, 1, 3) + relativedelta(bdays=2),
@@ -137,16 +145,19 @@ class TestRelativeDelta(unittest.TestCase):
                          datetime(2014, 1, 6, 13, 0))
 
     def test_radd_time(self):
-        self.assertEqual("2015-01-02 16:45" + relativedelta(bminutes=+30),
+        self.assertEqual(datetime("2015-01-02 16:45") +
+                         relativedelta(bminutes=+30),
                          datetime(2015, 1, 5, 9, 15))
         self.assertEqual(date(2015, 1, 2) + relativedelta(bminutes=+30),
                          datetime(2015, 1, 2, 9, 30))
         self.assertEqual(date(2014, 1, 3) + relativedelta(bdays=1, bhours=4),
                          datetime(2014, 1, 6, 13, 0))
         relativedelta.btstart = time(7, 30)
-        self.assertEqual("2015-01-02 16:45" + relativedelta(bminutes=+30),
+        self.assertEqual(datetime("2015-01-02 16:45") +
+                         relativedelta(bminutes=+30),
                          datetime(2015, 1, 5, 7, 45))
-        self.assertEqual("2015-01-02 16:45" + relativedelta(bhours=+0.5),
+        self.assertEqual(datetime("2015-01-02 16:45") +
+                         relativedelta(bhours=+0.5),
                          datetime(2015, 1, 5, 7, 45))
         del relativedelta.btstart
 
@@ -169,8 +180,8 @@ class TestRelativeDelta(unittest.TestCase):
                          date(2014, 1, 7))
         self.assertEqual(date(2014, 2, 3) - relativedelta(bdays=19),
                          date(2014, 1, 7))
-        self.assertEqual("2014-11-15" - relativedelta(bdays=1),
-                         datetime(2014, 11, 14))
+        self.assertEqual(date("2014-11-15") - relativedelta(bdays=1),
+                         date(2014, 11, 14))
         self.assertEqual(date.today() - relativedelta(bdays=+45),
                          date.today() + relativedelta(bdays=-45))
 

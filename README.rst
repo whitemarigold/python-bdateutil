@@ -316,8 +316,8 @@ Running Tests
 .. code-block:: bash
 
     $ pip install flake8
-    $ flake8 bdateutil/*.py tests/bdateutil_tests.py --ignore=F401,E402,F403,F405
-    $ python -m unittest discover tests/
+    $ flake8 bdateutil/*.py tests.py --ignore=F401,E402,F403,F405
+    $ python tests.py
 
 
 Coverage
@@ -326,7 +326,7 @@ Coverage
 .. code-block:: bash
 
     $ pip install coverage
-    $ coverage run --omit=*site-packages*,*dateutil_tests* -m unittest discover tests/
+    $ coverage run --omit=*site-packages*,*test_dateutil/* tests.py
     $ coverage report
 
 
