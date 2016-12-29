@@ -124,6 +124,23 @@ class TestRelativeDelta(unittest.TestCase):
         self.assertEqual(datetime("2014-11-15 1:23") + relativedelta(bdays=1),
                          datetime(2014, 11, 18, 1, 23))
 
+    def test_add_sub(self):
+        self.assertEqual(datetime("2014-11-15 1:23").add(bdays=1),
+                         datetime(2014, 11, 18, 1, 23))
+        self.assertEqual(datetime("2014-11-15 1:23").sub(bdays=-1),
+                         datetime(2014, 11, 18, 1, 23))
+        self.assertEqual(date(2016, 1, 1).add(hours=2, minutes=4),
+                         datetime(2016, 1, 1, 2, 4))
+        self.assertEqual(datetime(2016, 1, 1, 0).sub(days=1),
+                         datetime(2015, 12, 31, 0))
+        ush = holidays.US()
+        self.assertEqual(date(2016, 12, 30).add(bdays=1, holidays=ush),
+                         date(2017, 1, 3))
+        self.assertEqual(date(2016, 12, 31).add(bdays=0, holidays=ush),
+                         date(2017, 1, 3))
+        self.assertEqual(date(2016, 12, 31).add(bdays=1, holidays=ush),
+                         date(2017, 1, 4))
+
     def test_bdays_zero(self):
         self.assertEqual(date("2014-11-15") + relativedelta(bdays=0),
                          date(2014, 11, 17))

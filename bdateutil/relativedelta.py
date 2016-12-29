@@ -109,6 +109,7 @@ class relativedelta(rd):
             rd.__init__(self, dt1, dt2, *args, **kwargs)
 
     def __add__(self, other):
+        other_class = other.__class__
         if isinstance(other, relativedelta):
             ret = rd.__add__(self, other)
             ret.__class__ = self.__class__
@@ -137,6 +138,7 @@ class relativedelta(rd):
                      getattr(self, 'second', 0) or
                      getattr(self, 'microsecond', 0)):
             other = datetime.combine(other, datetime.min.time())
+            other_class = other.__class__
         if isinstance(other, time):
             other = datetime.combine(date.today(), other)
         for attr in ('bseconds', 'bminutes', 'bhours', 'bdays'):
@@ -161,12 +163,12 @@ class relativedelta(rd):
         ret = rd.__add__(self, other)
         # Ensure when relativedelta is added to `other` object that it returns
         # the same type of object as `other`
-        if ret.__class__ != other.__class__:
+        if ret.__class__ != other_class:
             if ret.__class__ == date:
-                ret = other.__class__(*(ret.timetuple()[:3]))
+                ret = other_class(*(ret.timetuple()[:3]))
             elif ret.__class__ == datetime:
-                ret = other.__class__(*(ret.timetuple()[:6] +
-                                        (ret.microsecond, ret.tzinfo)))
+                ret = other_class(*(ret.timetuple()[:6] +
+                                    (ret.microsecond, ret.tzinfo)))
         if isinstance(other, time):
             return ret.time()
         return ret

@@ -57,6 +57,15 @@ class date(basedate):
         return date(self.year, self.month,
                     calendar.monthrange(self.year, self.month)[1])
 
+    def add(self, **kwargs):
+        return self + relativedelta(**kwargs)
+
+    def sub(self, **kwargs):
+        return self - relativedelta(**kwargs)
+
+    def __repr__(self):
+        return 'bdateutil.' + basedate.__repr__(self)
+
 
 class datetime(basedatetime):
 
@@ -84,6 +93,15 @@ class datetime(basedatetime):
                         self.hour, self.minute, self.second,
                         self.microsecond)
 
+    def add(self, **kwargs):
+        return self + relativedelta(**kwargs)
+
+    def sub(self, **kwargs):
+        return self - relativedelta(**kwargs)
+
+    def __repr__(self):
+        return 'bdateutil.' + basedatetime.__repr__(self)
+
 
 class time(basetime):
 
@@ -98,3 +116,6 @@ class time(basetime):
         if ret.date() == basedatetime.now().date():
             return ret.time()
         return ret
+
+    def __repr__(self):
+        return 'bdateutil.' + basetime.__repr__(self)

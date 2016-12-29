@@ -26,9 +26,18 @@ Example Usage
 .. code-block:: python
 
     # Increment date by two business days
-    >>> from bdateutil import date, relativedelta
+    >>> from datetime import date
+    >>> from bdateutil relativedelta
     >>> date(2016, 6, 30) + relativedelta(bdays=+2)
     datetime.date(2016, 7, 4)
+
+    # If you import date/datetime objects from bdateutil they have a nice
+    # shortcut to using relativedelta, `add` and `sub` methods:
+    >>> from bdateutil import date
+    >>> date(2016, 6, 30).add(bdays=+2)
+    bdateutil.date(2016, 7, 4)
+    >>> isinstance(bdateutil.date.today(), datetime.date)
+    True
 
     # Take into account U.S. statutory holidays
     >>> import holidays
@@ -51,8 +60,11 @@ Example Usage
     # Determine how many business days between two dates
     >>> from bdateutil import relativedelta
     >>> relativedelta.holidays = holidays.US()
-    >>> relativedelta(date(2016, 7, 5), date(2016, 6, 30))
+    >>> r = relativedelta(date(2016, 7, 5), date(2016, 6, 30))
+    >>> r
     relativedelta(days=+5, bdays=+2)
+    >>> r.bdays
+    2
 
     # Get a list of the next 10 business days starting 2014-01-01
     >>> from bdateutil import rrule, BDAILY
