@@ -52,10 +52,18 @@ class date(basedate):
     def week(self):
         return self.isocalendar()[1]
 
-    @property
-    def eomday(self):
+    def month_start(self):
+        return date(self.year, self.month, 1)
+
+    def month_end(self):
         return date(self.year, self.month,
                     calendar.monthrange(self.year, self.month)[1])
+
+    def year_start(self):
+        return date(self.year, 1, 1)
+
+    def year_end(self):
+        return date(self.year, 12, 31)
 
     def add(self, **kwargs):
         return self + relativedelta(**kwargs)
@@ -86,12 +94,27 @@ class datetime(basedatetime):
     def week(self):
         return self.isocalendar()[1]
 
-    @property
-    def eomday(self):
+    def day_start(self):
+        return datetime(self.year, self.month, self.day, 0, 0, 0, 0,
+                        self.tzinfo)
+
+    def day_end(self):
+        return datetime(self.year, self.month, self.day, 23, 59, 59, 999999,
+                        self.tzinfo)
+
+    def month_start(self):
+        return datetime(self.year, self.month, 1, 0, 0, 0, 0, self.tzinfo)
+
+    def month_end(self):
         return datetime(self.year, self.month,
                         calendar.monthrange(self.year, self.month)[1],
-                        self.hour, self.minute, self.second,
-                        self.microsecond)
+                        23, 59, 59, 999999, self.tzinfo)
+
+    def year_start(self):
+        return datetime(self.year, 1, 1, 0, 0, 0, 0, self.tzinfo)
+
+    def year_end(self):
+        return datetime(self.year, 12, 31, 23, 59, 59, 999999, self.tzinfo)
 
     def add(self, **kwargs):
         return self + relativedelta(**kwargs)

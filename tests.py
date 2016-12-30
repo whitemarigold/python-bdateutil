@@ -142,6 +142,23 @@ class TestRelativeDelta(unittest.TestCase):
                          date(2017, 1, 4))
         self.assertEqual(time(3, 40).add(hours=5, minutes=25), time(9, 5))
 
+    def test_start_end(self):
+        dt = datetime(2016, 12, 30, 5)
+        self.assertEqual(dt.day_start(), datetime(2016, 12, 30, 0))
+        self.assertEqual(dt.day_end(),
+                         datetime(2016, 12, 30, 23, 59, 59, 999999))
+        self.assertEqual(dt.month_start(), datetime(2016, 12, 1, 0))
+        self.assertEqual(dt.month_end(),
+                         datetime(2016, 12, 31, 23, 59, 59, 999999))
+        self.assertEqual(dt.year_start(), datetime(2016, 1, 1, 0))
+        self.assertEqual(dt.year_end(),
+                         datetime(2016, 12, 31, 23, 59, 59, 999999))
+        d = date(2015, 2, 13)
+        self.assertEqual(d.month_start(), date(2015, 2, 1))
+        self.assertEqual(d.month_end(), date(2015, 2, 28))
+        self.assertEqual(d.year_start(), date(2015, 1, 1))
+        self.assertEqual(d.year_end(), date(2015, 12, 31))
+
     def test_bdays_zero(self):
         self.assertEqual(date("2014-11-15") + relativedelta(bdays=0),
                          date(2014, 11, 17))
@@ -409,15 +426,6 @@ class TestDateTime(unittest.TestCase):
 
     def test_week(self):
         self.assertEqual(date("2016-12-20").week, 51)
-
-    def test_eomday(self):
-        self.assertEqual(date("2015-02-15").eomday, dt.date(2015, 2, 28))
-        self.assertEqual(datetime("2015-03-01 12:34").eomday,
-                         dt.datetime(2015, 3, 31, 12, 34))
-        d1 = date("2016-12-20") + relativedelta(days=1)
-        self.assertEqual(d1.eomday, date(2016, 12, 31))
-        dt1 = datetime("2016-12-20 1:22") + relativedelta(days=1)
-        self.assertEqual(dt1.eomday, datetime(2016, 12, 31, 1, 22))
 
 
 if __name__ == "__main__":
