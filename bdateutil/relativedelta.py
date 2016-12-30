@@ -164,13 +164,14 @@ class relativedelta(rd):
         # Ensure when relativedelta is added to `other` object that it returns
         # the same type of object as `other`
         if ret.__class__ != other_class:
-            if ret.__class__ == date:
-                ret = other_class(*(ret.timetuple()[:3]))
-            elif ret.__class__ == datetime:
+            if issubclass(other_class, datetime):
                 ret = other_class(*(ret.timetuple()[:6] +
                                     (ret.microsecond, ret.tzinfo)))
-        if isinstance(other, time):
-            return ret.time()
+            elif issubclass(other_class, date):
+                ret = other_class(*(ret.timetuple()[:3]))
+            elif issubclass(other_class, time):
+                ret = other_class(ret.hour, ret.minute, ret.second,
+                                  ret.microsecond, ret.tzinfo)
         return ret
 
     def __radd__(self, other):

@@ -113,9 +113,13 @@ class time(basetime):
     @staticmethod
     def now(**kwargs):
         ret = basedatetime.now() + relativedelta(**kwargs)
-        if ret.date() == basedatetime.now().date():
-            return ret.time()
-        return ret
+        return ret.time()
+
+    def add(self, **kwargs):
+        return self + relativedelta(**kwargs)
+
+    def sub(self, **kwargs):
+        return self - relativedelta(**kwargs)
 
     def __repr__(self):
         return 'bdateutil.' + basetime.__repr__(self)

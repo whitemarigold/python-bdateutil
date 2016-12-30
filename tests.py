@@ -140,6 +140,7 @@ class TestRelativeDelta(unittest.TestCase):
                          date(2017, 1, 3))
         self.assertEqual(date(2016, 12, 31).add(bdays=1, holidays=ush),
                          date(2017, 1, 4))
+        self.assertEqual(time(3, 40).add(hours=5, minutes=25), time(9, 5))
 
     def test_bdays_zero(self):
         self.assertEqual(date("2014-11-15") + relativedelta(bdays=0),
