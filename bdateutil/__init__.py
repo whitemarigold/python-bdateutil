@@ -41,10 +41,6 @@ class date(basedate):
                 raise TypeError("bdateutil.date cannot be initialized with "
                                 "just a time")
             args = parse(args[0]).timetuple()[:3]
-        if len(args) > 2:
-            if args[2] == 99:
-                args = list(args)
-                args[2] = calendar.monthrange(args[0], args[1])[1]
         return basedate.__new__(cls, *args, **kwargs)
 
     @staticmethod
@@ -85,10 +81,6 @@ class datetime(basedatetime):
             if isinstance(args[0], basetime):
                 args = (basedatetime.combine(basedatetime.today(), args[0]), )
             args = parse(args[0]).timetuple()[:6]
-        if len(args) > 2:
-            if args[2] == 99:
-                args = list(args)
-                args[2] = calendar.monthrange(args[0], args[1])[1]
         return basedatetime.__new__(cls, *args, **kwargs)
 
     @staticmethod

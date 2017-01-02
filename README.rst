@@ -316,17 +316,28 @@ following additional features:
     >>> d.week
     51
 
-    # Pass 99 as the day to return the last day of the month
-    >>> date(2015, 2, 99)
+    # `date` and `datetime` objects now have new methods for retreiving the
+    # first and last days of the year, month, and day (datetime only)
+    >>> date(2015, 2, 15).month_start()
+    date(2015, 2, 1)
+    >>> date(2015, 2, 15).month_end()
     date(2015, 2, 28)
-    >>> datetime(2015, 2, 99, 12, 0)
-    datetime(2015, 2, 28, 12, 0)
-
-    # New property `eomday` returns the last day of the month
-    >>> date(2015, 2, 15).eomday
-    date(2015, 2, 28)
-    >>> datetime(2015, 3, 25, 12, 34)
-    datetime(2015, 3, 31, 12, 34)
+    >>> date(2015, 2, 15).year_start()
+    date(2015, 1, 1)
+    >>> date(2015, 2, 15).year_end()
+    date(2015, 12, 31)
+    >>> datetime(2015, 3, 25, 12, 34).day_start()
+    datetime(2015, 3, 25, 0, 0, 0, 0)
+    >>> datetime(2015, 3, 25, 12, 34).day_end()
+    datetime(2015, 3, 25, 23, 59, 59, 999999)
+    >>> datetime(2015, 3, 25, 12, 34).month_start()
+    datetime(2015, 3, 1, 0, 0, 0, 0)
+    >>> datetime(2015, 3, 25, 12, 34).month_end()
+    datetime(2015, 3, 31, 23, 59, 59, 999999)
+    >>> datetime(2015, 3, 25, 12, 34).year_start()
+    datetime(2015, 1, 1, 0, 0, 0, 0)
+    >>> datetime(2015, 3, 25, 12, 34).year_end()
+    datetime(2015, 12, 31, 23, 59, 59, 999999)
 
 
 Development Version

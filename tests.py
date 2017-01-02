@@ -394,7 +394,7 @@ class TestDateTime(unittest.TestCase):
         self.assertRaises(ValueError, lambda: date("abc"))
         self.assertRaises(TypeError, lambda: date(['a', 'b', 'c']))
         self.assertRaises(TypeError, lambda: date(time(3, 40)))
-        self.assertEqual(date(2015, 2, 99), date(2015, 2, 28))
+        self.assertEqual(date(2015, 2, 15).month_end(), date(2015, 2, 28))
         self.assertEqual(date.today(), dt.date.today())
         self.assertEqual(date.today(days=+1),
                          dt.date.today() + relativedelta(days=+1))
@@ -409,8 +409,8 @@ class TestDateTime(unittest.TestCase):
     def test_datetime(self):
         self.assertEqual(datetime("2015-03-25 12:34"),
                          dt.datetime(2015, 3, 25, 12, 34))
-        self.assertEqual(datetime(2015, 3, 99, 23, 45),
-                         datetime(2015, 3, 31, 23, 45))
+        self.assertEqual(datetime(2015, 3, 15, 23, 45).month_end(),
+                         datetime(2015, 3, 31, 23, 59, 59, 999999))
         self.assertEqual(datetime.now().date(), dt.datetime.now().date())
         self.assertEqual(datetime.now(bdays=-45).date(),
                          (dt.datetime.now() - relativedelta(bdays=45)).date())
