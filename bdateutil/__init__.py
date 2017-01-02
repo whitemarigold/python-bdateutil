@@ -79,6 +79,8 @@ class datetime(basedatetime):
 
     def __new__(cls, *args, **kwargs):
         if len(args) == 1:
+            if isinstance(args[0], basetime):
+                args = (basedatetime.combine(basedatetime.today(), args[0]), )
             args = parse(args[0]).timetuple()[:6]
         if len(args) > 2:
             if args[2] == 99:

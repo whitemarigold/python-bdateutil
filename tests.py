@@ -413,6 +413,9 @@ class TestDateTime(unittest.TestCase):
         self.assertEqual(datetime.now().date(), dt.datetime.now().date())
         self.assertEqual(datetime.now(bdays=-45).date(),
                          (dt.datetime.now() - relativedelta(bdays=45)).date())
+        self.assertEqual(datetime(time("3:40")),
+                         dt.datetime.combine(dt.datetime.today(),
+                                             dt.time(3, 40, 0)))
 
     def test_time(self):
         self.assertEqual(time("12:45:54"), time(12, 45, 54))

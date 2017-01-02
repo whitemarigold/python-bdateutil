@@ -287,6 +287,17 @@ following additional features:
     >>> time("2:30 PM")
     datetime.time(14, 30)
 
+    # This makes it easy to convert between datetime types
+    >>> dt = datetime(2016, 1, 2, 3)
+    >>> date(dt)
+    bdateutil.date(2016, 1, 2)
+    >>> d = date(2016, 1, 2)
+    >>> datetime(d)
+    bdateutil.datetime(2016, 1, 2, 0, 0, 0)
+    >>> t = time("3:40")
+    >>> datetime(t)
+    bdateutil.datetime(2017, 1, 2, 3, 40, 0)  # Where current date is Jan 2nd, 2017
+
     # time has a `now()` staticmethod similar to datetime
     >>> time.now()
     datetime.time(14, 52, 57, 984686)
