@@ -393,6 +393,7 @@ class TestDateTime(unittest.TestCase):
         self.assertEqual(date(1388577600), dt.date(2014, 1, 1))
         self.assertRaises(ValueError, lambda: date("abc"))
         self.assertRaises(TypeError, lambda: date(['a', 'b', 'c']))
+        self.assertRaises(TypeError, lambda: date(time(3, 40)))
         self.assertEqual(date(2015, 2, 99), date(2015, 2, 28))
         self.assertEqual(date.today(), dt.date.today())
         self.assertEqual(date.today(days=+1),

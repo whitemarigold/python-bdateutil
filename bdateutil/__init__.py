@@ -37,6 +37,9 @@ class date(basedate):
 
     def __new__(cls, *args, **kwargs):
         if len(args) == 1:
+            if isinstance(args[0], basetime):
+                raise TypeError("bdateutil.date cannot be initialized with "
+                                "just a time")
             args = parse(args[0]).timetuple()[:3]
         if len(args) > 2:
             if args[2] == 99:
