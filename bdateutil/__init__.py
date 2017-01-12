@@ -11,6 +11,14 @@
 __version__ = '0.2-dev'
 
 
+# Defaults
+from datetime import time
+BTSTART = time(9, 0)
+BTEND = time(17, 0)
+WORKDAYS = range(5)
+HOLIDAYS = []
+
+
 import calendar
 from datetime import date as basedate
 from datetime import datetime as basedatetime
@@ -26,11 +34,9 @@ from bdateutil.rrule import *
 
 def isbday(dt, holidays=None):
     if holidays is None:
-        holidays = getattr(isbday, 'holidays', None)
-    if holidays is None:
-        holidays = getattr(bdateutil, 'holidays', ())
+        holidays = HOLIDAYS
     dt = parse(dt)
-    return not (dt.weekday() in (5, 6) or dt in holidays)
+    return dt.weekday() in WORKDAYS and dt not in holidays
 
 
 class date(basedate):

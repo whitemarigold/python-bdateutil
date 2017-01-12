@@ -23,24 +23,30 @@ from bdateutil.parser import parse
 
 class relativedelta(rd):
 
-    def __init__(self, dt1=None, dt2=None, bdays=None, holidays=None,
+    def __init__(self, dt1=None, dt2=None, bdays=None,
                  bhours=None, bminutes=None, bseconds=None,
-                 btstart=None, btend=None, *args, **kwargs):
+                 holidays=None, workdays=None, btstart=None, btend=None,
+                 *args, **kwargs):
         self.holidays = holidays
         if self.holidays is None:
-            self.holidays = getattr(relativedelta, 'holidays', None)
-        if self.holidays is None:
-            self.holidays = getattr(bdateutil, 'holidays', ())
+            self.holidays = bdateutil.HOLIDAYS
+        self.workdays = workdays
+        if self.workdays is None:
+            self.workdays = bdateutil.WORKDAYS
+        if not self.workdays or self.workdays[0] not in range(7):
+            raise ValueError("workdays must contain integers 0-6")
         self.btstart = btstart
         if self.btstart is None:
-            self.btstart = getattr(relativedelta, 'btstart', None)
-        if self.btstart is None:
-            self.btstart = getattr(bdateutil, 'btstart', time(9))
+            self.btstart = bdateutil.BTSTART
         self.btend = btend
         if self.btend is None:
-            self.btend = getattr(relativedelta, 'btend', None)
-        if self.btend is None:
-            self.btend = getattr(bdateutil, 'btend', time(17))
+            self.btend = bdateutil.BTEND
+        if not isinstance(self.btstart, time):
+            raise TypeError("btstart must be of type time")
+        if not isinstance(self.btend, time):
+            raise TypeError("btend must be of type time")
+        if self.btstart >= self.btend:
+            raise ValueError("btend must be greater than btstart")
         if dt1 and dt2:
             # Convert to datetime objects
             dt1 = parse(dt1)
@@ -59,7 +65,7 @@ class relativedelta(rd):
             c = defaultdict(int)
             d1 = max(dt1, dt2)
             d2 = min(dt1, dt2)
-            if d1.weekday() in (5, 6) or d1 in self.holidays:
+            if d1.weekday() not in self.workdays or d1 in self.holidays:
                 c['bdays'] += 1
             for attr in ('bhours', 'bminutes', 'bseconds'):
                 while getattr(d1, attr[1:-1]) != getattr(d2, attr[1:-1]):
@@ -68,7 +74,7 @@ class relativedelta(rd):
                         c[attr] += 1
             while d1 > d2:
                 d2 += rd(days=+1)
-                if d2.weekday() not in (5, 6) and d2 not in self.holidays:
+                if d2.weekday() in self.workdays and d2 not in self.holidays:
                     c['bdays'] += 1
             self.bdays = c['bdays']
             self.bhours = c['bhours']
@@ -143,7 +149,8 @@ class relativedelta(rd):
             other = datetime.combine(date.today(), other)
         for attr in ('bseconds', 'bminutes', 'bhours', 'bdays'):
             if getattr(self, attr, None) is not None:
-                while other.weekday() in (5, 6) or other in self.holidays:
+                while other.weekday() not in self.workdays \
+                        or other in self.holidays:
                     other += rd(days=+1)
                 while attr != "bdays" and \
                         (other.time() < self.btstart or
@@ -153,7 +160,8 @@ class relativedelta(rd):
                 a = +1 if i > 0 else -1
                 while i != 0:
                     other += rd(**{attr[1:]: a})
-                    while other.weekday() in (5, 6) or other in self.holidays:
+                    while other.weekday() not in self.workdays \
+                            or other in self.holidays:
                         other += rd(days=a)
                     while attr != "bdays" and \
                             (other.time() < self.btstart or
@@ -191,7 +199,8 @@ class relativedelta(rd):
     def __rsub__(self, other):
         if getattr(self, 'bdays', None) is not None:
             if self.bdays == 0:
-                while other.weekday() in (5, 6) or other in self.holidays:
+                while other.weekday() not in self.workdays \
+                        or other in self.holidays:
                     other += rd(days=-1)
         return self.__neg__().__radd__(other)
 

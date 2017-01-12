@@ -23,12 +23,13 @@ BDAILY = 8
 
 class rrule(rrulebase):
 
-    def __init__(self, freq, holidays=None, **kwargs):
+    def __init__(self, freq, holidays=None, workdays=None, **kwargs):
         self.holidays = holidays
         if self.holidays is None:
-            self.holidays = getattr(rrule, 'holidays', None)
-        if self.holidays is None:
-            self.holidays = getattr(bdateutil, 'holidays', ())
+            self.holidays = bdateutil.HOLIDAYS
+        self.workdays = workdays
+        if self.workdays is None:
+            self.workdays = bdateutil.WORKDAYS
         if 'dtstart' in kwargs:
             kwargs['dtstart'] = parse(kwargs['dtstart'])
         if 'until' in kwargs:
@@ -46,7 +47,7 @@ class rrule(rrulebase):
         total = 0
         for i in rrulebase._iter(self):
             if self._bdaily:
-                if i.weekday() < 5 and i not in self.holidays:
+                if i.weekday() in self.workdays and i not in self.holidays:
                     total += 1
                     if self._count and total > self._count / 2:
                         self._len = total

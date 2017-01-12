@@ -14,7 +14,6 @@ import unittest
 
 import holidays
 
-# `test_dateutil` directory contains tests from python-dateutil 2.6.0
 try:
     from dateutil.tz import datetime_ambiguous, datetime_exists
     from test_dateutil_26.test_easter import *
@@ -49,17 +48,13 @@ class TestIsBday(unittest.TestCase):
                          holidays=holidays.US()))
         self.assertFalse(isbday(datetime(2014, 1, 1, 17, 30),
                          holidays=holidays.US()))
-        bdateutil.holidays = holidays.Canada()
+        bdateutil.HOLIDAYS = holidays.Canada()
         self.assertFalse(isbday(date(2014, 7, 1)))
         self.assertTrue(isbday(date(2014, 7, 4)))
         self.assertFalse(isbday(date(2014, 1, 1)))
-        isbday.holidays = holidays.US()
-        self.assertTrue(isbday(date(2014, 7, 1)))
-        self.assertFalse(isbday(date(2014, 7, 4)))
-        del isbday.holidays
         self.assertTrue(isbday(date(2014, 7, 1), holidays=holidays.US()))
         self.assertFalse(isbday(date(2014, 7, 4), holidays=holidays.US()))
-        del bdateutil.holidays
+        bdateutil.HOLIDAYS = []
 
 
 class TestRelativeDelta(unittest.TestCase):
@@ -90,18 +85,12 @@ class TestRelativeDelta(unittest.TestCase):
                                        holidays=holidays.US()),
                          relativedelta(days=11, hours=18, minutes=22,
                                        bdays=6, bhours=8, bminutes=0))
-        bdateutil.holidays = holidays.CA()
+        bdateutil.HOLIDAYS = holidays.CA()
         self.assertEqual(relativedelta(datetime(2015, 1, 20, 21, 22),
                                        datetime(2015, 1, 9, 3, 0)),
                          relativedelta(days=11, hours=18, minutes=22,
                                        bdays=7, bhours=8, bminutes=0))
-        relativedelta.holidays = holidays.US()
-        self.assertEqual(relativedelta(datetime(2015, 1, 20, 21, 22),
-                                       datetime(2015, 1, 9, 3, 0)),
-                         relativedelta(days=11, hours=18, minutes=22,
-                                       bdays=6, bhours=8, bminutes=0))
-        del bdateutil.holidays
-        del relativedelta.holidays
+        bdateutil.HOLIDAYS = []
         self.assertEqual(relativedelta(time(3, 40), time(2, 37)),
                          relativedelta(hours=1, minutes=3))
 
@@ -191,14 +180,14 @@ class TestRelativeDelta(unittest.TestCase):
                          datetime(2015, 1, 2, 9, 30))
         self.assertEqual(date(2014, 1, 3) + relativedelta(bdays=1, bhours=4),
                          datetime(2014, 1, 6, 13, 0))
-        relativedelta.btstart = time(7, 30)
+        bdateutil.BTSTART = time(7, 30)
         self.assertEqual(datetime("2015-01-02 16:45") +
                          relativedelta(bminutes=+30),
                          datetime(2015, 1, 5, 7, 45))
         self.assertEqual(datetime("2015-01-02 16:45") +
                          relativedelta(bhours=+0.5),
                          datetime(2015, 1, 5, 7, 45))
-        del relativedelta.btstart
+        bdateutil.BTSTART = time(9, 0)
 
     def test_sub(self):
         rd1 = relativedelta(years=+1, months=+2, bdays=+3, days=+4,
@@ -367,26 +356,19 @@ class TestRRule(unittest.TestCase):
                           datetime(2015, 7, 2, 0, 0),
                           datetime(2015, 7, 3, 0, 0),
                           datetime(2015, 7, 6, 0, 0)])
-        rrule.holidays = holidays.US()
+        bdateutil.HOLIDAYS = holidays.US()
         self.assertEqual(list(rrule(BDAILY, count=4, dtstart="2015-07-01")),
                          [datetime(2015, 7, 1, 0, 0),
                           datetime(2015, 7, 2, 0, 0),
                           datetime(2015, 7, 6, 0, 0),
                           datetime(2015, 7, 7, 0, 0)])
-        del rrule.holidays
-        bdateutil.holidays = holidays.US()
-        self.assertEqual(list(rrule(BDAILY, count=4, dtstart="2015-07-01")),
-                         [datetime(2015, 7, 1, 0, 0),
-                          datetime(2015, 7, 2, 0, 0),
-                          datetime(2015, 7, 6, 0, 0),
-                          datetime(2015, 7, 7, 0, 0)])
-        del bdateutil.holidays
         self.assertEqual(list(rrule(BDAILY, count=4, dtstart="2015-07-01",
                               holidays=holidays.CA())),
                          [datetime(2015, 7, 2, 0, 0),
                           datetime(2015, 7, 3, 0, 0),
                           datetime(2015, 7, 6, 0, 0),
                           datetime(2015, 7, 7, 0, 0)])
+        bdateutil.HOLIDAYS = []
 
 
 class TestDateTime(unittest.TestCase):
@@ -434,6 +416,45 @@ class TestDateTime(unittest.TestCase):
 
     def test_week(self):
         self.assertEqual(date("2016-12-20").week, 51)
+
+
+class TestDefaults(unittest.TestCase):
+
+    def test_WORKDAYS(self):
+        self.assertEqual(date(2017, 1, 4) + relativedelta(bdays=3),
+                         date(2017, 1, 9))
+        bdateutil.WORKDAYS = (0, 1, 2)  # Mon, Tues, Wed
+        self.assertEqual(date(2017, 1, 4) + relativedelta(bdays=3),
+                         date(2017, 1, 11))
+        self.assertEqual(date(2017, 1, 4) + relativedelta(bdays=3,
+                                                          workdays=(0,)),
+                         date(2017, 1, 30))
+        bdateutil.WORKDAYS = range(5)
+        self.assertRaises(ValueError,
+                          lambda: date(2017, 1, 4) +
+                          relativedelta(bdays=3, workdays=()))
+        self.assertRaises(ValueError,
+                          lambda: date(2017, 1, 4) +
+                          relativedelta(bdays=3, workdays=('x', 'y')))
+
+    def test_BTSTART_BTEND(self):
+        self.assertEqual(time(16, 30) + relativedelta(bminutes=60),
+                         time(9, 30))
+        bdateutil.BTSTART = time(10, 30)
+        bdateutil.BTEND = time(16, 45)
+        self.assertEqual(time(16, 30) + relativedelta(bminutes=60),
+                         time(11, 15))
+        self.assertEqual(time(16, 30) + relativedelta(bminutes=60,
+                                                      btstart=time(11, 30)),
+                         time(12, 15))
+        bdateutil.BTEND = time(8, 0)
+        self.assertRaises(ValueError,
+                          lambda: time(16, 30) + relativedelta(bminutes=60))
+        bdateutil.BTEND = None
+        self.assertRaises(TypeError,
+                          lambda: time(16, 30) + relativedelta(bminutes=60))
+        bdateutil.BTSTART = time(9, 0)
+        bdateutil.BTEND = time(17, 0)
 
 
 if __name__ == "__main__":

@@ -45,21 +45,16 @@ Example Usage
     datetime.date(2016, 7, 5)
 
     # Take U.S. holidays into account by default whenever
-    # relativedelta() function is used
-    >>> from bdateutil import relativedelta
-    >>> relativedelta.holidays = holidays.US()
-
-    # Take U.S. holidays into acccount by default whenever any bdateutil
-    # module function is used
-    # holidays attributes work simimlar to CSS: a holidays kwarg takes
-    # precedent over a function default, which takes precedent over the
-    # module default
+    # any bdateutil function is used
+    # Passing the `holidays` kwarg to a function will take precendent 
+    # over the module default
     >>> import bdateutil
-    >>> bdateutil.holidays = holidays.US()
+    >>> import holidays
+    >>> bdateutil.HOLIDAYS = holidays.US()
 
     # Determine how many business days between two dates
     >>> from bdateutil import relativedelta
-    >>> relativedelta.holidays = holidays.US()
+    >>> bdateutil.HOLIDAYS = holidays.US()
     >>> r = relativedelta(date(2016, 7, 5), date(2016, 6, 30))
     >>> r
     relativedelta(days=+5, bdays=+2)
@@ -161,20 +156,14 @@ following additional features:
     >>> date(2014, 7, 3) + relativedelta(bdays=+2, holidays=UnitedStates())
     datetime.date(2014, 7, 8)
 
-    # Set relativedelta to always use holidays
-    >>> relativedelta.holidays = UnitedStates()
-    >>> date(2014, 7, 3) + relativedelta(bdays=+2)
-    datetime.date(2014, 7, 8)
-
     # Set default holidays for all bdateutil functions
     # (relativedelta, rrule, isbday)
-    # This will be overridden by relativedelta.holidays which will be
-    # overridden if passing holidays kwargs to relativedelta()
+    # This will be overridden if passing holidays kwargs to relativedelta()
     >>> import bdateutil
-    >>> bdateutil.holidays = UnitedStates()
+    >>> bdateutil.HOLIDAYS = UnitedStates()
 
     # Remove default holidays from bdateutil functions
-    >>> del bdateutil.holidays
+    >>> bdateutil.HOLIDAYS = []
 
 5. A new function :code:`isbday` which returns :code:`True` if the argument
    passed to it falls on a business day and :code:`False` if it is a weekend or
@@ -199,7 +188,8 @@ following additional features:
     False
 
     # Set isbday to always take into account holidays
-    >>> isbday.holidays = holidays.US()
+    >>> import bdateutil
+    >>> bdateutil.HOLIDAYS = holidays.US()
     >>> isbday("2014-01-01")
     False
 
@@ -250,7 +240,7 @@ following additional features:
 
     # Add default set of holidays to rrule so you don't have to explicitly pass
     # a holiday list each time you call rrule
-    >>> rrule.holidays = holidays.US()
+    >>> bdateutil.HOLDIAYS = holidays.US()
     # You can still pass a holidays argument to override the default setting
     >>> list(rrule(BDAILY, dtstart="2014-01-01", until="2014-01-31",
                    holidays=holidays.Canada()))
@@ -308,7 +298,7 @@ following additional features:
     >>> time.now(hours=+1)
     datetime.time(15, 52, 57, 984686)
     # date.today(), datetime.now() and time.now() use the optional default
-    # holidays setting from relativedelta.holidays if they are set
+    # holidays setting from bdateutil.HOLIDAYS if they are set
 
     # date and datetime objects have a `week` property giving the number of the
     # week in the year
