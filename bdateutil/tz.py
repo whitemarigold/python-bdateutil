@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from dateutil.tz import *
-from dateutil.tz import datetime_ambiguous, datetime_exists
+try:
+    from dateutil.tz import datetime_ambiguous, datetime_exists
+except:
+    pass
 
 from bdateutil import datetime
 

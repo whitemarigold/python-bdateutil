@@ -15,12 +15,16 @@ import unittest
 import holidays
 
 # `test_dateutil` directory contains tests from python-dateutil 2.6.0
-from test_dateutil.test_easter import *
-from test_dateutil.test_imports import *
-from test_dateutil.test_parser import *
-from test_dateutil.test_relativedelta import *
-from test_dateutil.test_rrule import *
-from test_dateutil.test_tz import *
+try:
+    from dateutil.tz import datetime_ambiguous, datetime_exists
+    from test_dateutil_26.test_easter import *
+    from test_dateutil_26.test_imports import *
+    from test_dateutil_26.test_parser import *
+    from test_dateutil_26.test_relativedelta import *
+    from test_dateutil_26.test_rrule import *
+    from test_dateutil_26.test_tz import *
+except:
+    from test_dateutil_22.test import *
 
 import bdateutil
 from bdateutil import isbday
