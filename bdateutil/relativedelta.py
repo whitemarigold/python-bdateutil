@@ -65,11 +65,14 @@ class relativedelta(rd):
             c = defaultdict(int)
             d1 = max(dt1, dt2)
             d2 = min(dt1, dt2)
-            if d1.weekday() not in self.workdays or d1 in self.holidays:
-                c['bdays'] += 1
+            while d2.weekday() not in self.workdays or d2 in self.holidays:
+                d2 += rd(days=+1)
             for attr in ('bhours', 'bminutes', 'bseconds'):
                 while getattr(d1, attr[1:-1]) != getattr(d2, attr[1:-1]):
                     d2 += rd(**{attr[1:]: +1})
+                    if d2.weekday() not in self.workdays \
+                            or d2 in self.holidays:
+                        d2 += rd(days=+1)
                     if d2.time() >= self.btstart and d2.time() < self.btend:
                         c[attr] += 1
             while d1 > d2:

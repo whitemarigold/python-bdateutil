@@ -65,11 +65,19 @@ class TestRelativeDelta(unittest.TestCase):
         self.assertEqual(relativedelta(date(2014, 1, 31), date(2014, 1, 1)),
                          relativedelta(days=30, bdays=22))
         self.assertEqual(relativedelta(date(2014, 2, 1), date(2014, 1, 1)),
-                         relativedelta(months=1, bdays=23))
+                         relativedelta(months=1, bdays=22))
         self.assertEqual(relativedelta(date(2014, 2, 2), date(2014, 1, 1)),
-                         relativedelta(months=1, days=1, bdays=23))
+                         relativedelta(months=1, days=1, bdays=22))
         self.assertEqual(relativedelta(date(2014, 1, 1), date(2014, 2, 2)),
-                         relativedelta(months=-1, days=-1, bdays=-23))
+                         relativedelta(months=-1, days=-1, bdays=-22))
+        self.assertEqual(relativedelta(datetime(2017, 1, 16),
+                                       datetime(2017, 1, 16),
+                                       holidays=holidays.US()),
+                         relativedelta(bdays=0))
+        self.assertEqual(relativedelta(datetime(2017, 1, 17),
+                                       datetime(2017, 1, 16),
+                                       holidays=holidays.US()),
+                         relativedelta(days=1, bdays=0))
 
     def test_init_time(self):
         self.assertEqual(relativedelta(datetime(2015, 1, 5, 9, 15),
