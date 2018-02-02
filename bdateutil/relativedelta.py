@@ -75,10 +75,11 @@ class relativedelta(rd):
                         d2 += rd(days=+1)
                     if d2.time() >= self.btstart and d2.time() < self.btend:
                         c[attr] += 1
-            while d1 > d2:
-                d2 += rd(days=+1)
+            while d1 >= d2:
                 if d2.weekday() in self.workdays and d2 not in self.holidays:
                     c['bdays'] += 1
+                d2 += rd(days=+1)
+
             self.bdays = c['bdays']
             self.bhours = c['bhours']
             self.bminutes = c['bminutes']
