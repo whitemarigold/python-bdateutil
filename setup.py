@@ -17,7 +17,7 @@ except ImportError:
 
 setup(
     name='bdateutil',
-    version='0.2-dev',
+    version='0.2.1',
     author='ryanss',
     author_email='ryanssdev@icloud.com',
     url='https://github.com/ryanss/bdateutil',
