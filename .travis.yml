@@ -1,36 +1,18 @@
-# https://travis-ci.org/ryanss/python-bdateutil
+# https://travis-ci.org/segfault/python-bdateutil
 
 language: python
 
 python:
-    - 2.6
     - 2.7
-    - 3.3
     - 3.4
     - 3.5
+    - 3.6
+    - 3.7
     - pypy
 
-env:
-    - DATEUTIL=python-dateutil==2.2
-    - DATEUTIL=python-dateutil
-
-before_install:
-  # From https://github.com/dateutil/dateutil/blob/master/.travis.yml
-  # Travis version of Pypy is old and is causing some jobs to fail, so
-  # we should build this ourselves
-  - "export PYENV_ROOT=$HOME/.pyenv"
-  - |
-    if [ "$TRAVIS_PYTHON_VERSION" = "pypy" ]; then
-      export PYPY_VERSION="5.4.1"
-      source ./pypy_upgrade.sh
-    fi
-
 install:
-    - pip install $DATEUTIL
     - python setup.py install
-    - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install flake8==2.6.2 unittest2; fi
-    - if [[ $TRAVIS_PYTHON_VERSION != 2.6 ]]; then pip install flake8; fi
-    - pip install coveralls
+    - pip install coveralls flake8
 
 before_script:
     - flake8 bdateutil/*.py tests.py --ignore=F401,E402,F403,F405
