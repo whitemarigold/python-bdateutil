@@ -3,7 +3,7 @@
 from dateutil.tz import *
 try:
     from dateutil.tz import datetime_ambiguous, datetime_exists
-except:
+except ImportError:
     pass
 
 from bdateutil import datetime

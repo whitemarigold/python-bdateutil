@@ -5,7 +5,8 @@
 #  simply replace dateutil imports with bdateutil.
 #
 #  Author:  ryanss <ryanssdev@icloud.com>
-#  Website: https://github.com/ryanss/python-bdateutil
+#  Author: Mark Guzman <segfault@hasno.info>
+#  Website: https://github.com/segfault/python-bdateutil
 #  License: MIT (see LICENSE file)
 
 
@@ -238,7 +239,7 @@ class relativedelta(rd):
     def __mul__(self, other):
         try:
             f = float(other)
-        except:
+        except (TypeError, ValueError):
             return other
         bdays = int(self.bdays * f) if self.bdays is not None else None
         return self.__class__(years=int(self.years * f),
@@ -271,16 +272,18 @@ class relativedelta(rd):
         return not self.__eq__(other)
 
     def __repr__(self):
-        l = []
+        ret = []
         for attr in ["years", "months", "days", "leapdays", "bdays",
                      "hours", "minutes", "seconds", "microseconds",
                      "bhours", "bminutes", "bseconds"]:
             value = getattr(self, attr, None)
             if value:
-                l.append("%s=%+g" % (attr, value))
+                ret.append("%s=%+g" % (attr, value))
+
         for attr in ["year", "month", "day", "weekday",
                      "hour", "minute", "second", "microsecond"]:
             value = getattr(self, attr)
             if value is not None:
-                l.append("%s=%s" % (attr, repr(value)))
-        return "%s(%s)" % (self.__class__.__name__, ", ".join(l))
+                ret.append("%s=%s" % (attr, repr(value)))
+
+        return "%s(%s)" % (self.__class__.__name__, ", ".join(ret))

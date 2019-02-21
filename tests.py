@@ -22,7 +22,7 @@ try:
     from test_dateutil_26.test_relativedelta import *
     from test_dateutil_26.test_rrule import *
     from test_dateutil_26.test_tz import *
-except:
+except ImportError:
     from test_dateutil_22.test import *
 
 import bdateutil
