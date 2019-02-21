@@ -9,6 +9,7 @@ python:
     - 3.6
     - 3.7
     - pypy
+    - pypy3.5
 
 matrix:
   include:
@@ -18,10 +19,10 @@ matrix:
 
 install:
     - python setup.py install
-    - pip install coveralls flake8 pytest
+    - pip install coveralls flake8 pytest pytest-cov codecov
 
 before_script:
-    - flake8 bdateutil/*.py tests.py --ignore=F401,E402,F403,F405
+    - flake8 bdateutil/*.py tests.py --ignore=F401,E402,F403,F405,W504
 
 script:
     - coverage run --omit=*site-packages*,*pypy*,*dateutil_tests/* tests.py
