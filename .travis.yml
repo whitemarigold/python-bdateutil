@@ -10,9 +10,15 @@ python:
     - 3.7
     - pypy
 
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
+
 install:
     - python setup.py install
-    - pip install coveralls flake8
+    - pip install coveralls flake8 pytest
 
 before_script:
     - flake8 bdateutil/*.py tests.py --ignore=F401,E402,F403,F405

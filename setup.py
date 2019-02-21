@@ -5,7 +5,8 @@
 #  simply replace dateutil imports with bdateutil.
 #
 #  Author:  ryanss <ryanssdev@icloud.com>
-#  Website: https://github.com/ryanss/bdateutil
+#  Author:  Mark Guzman <segfault@hasno.info>
+#  Website: https://github.com/segfault/bdateutil
 #  License: MIT (see LICENSE file)
 
 
