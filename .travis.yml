@@ -1,31 +1,26 @@
-# https://travis-ci.org/segfault/python-bdateutil
-
 language: python
-
 python:
-    - 2.7
-    - 3.4
-    - 3.5
-    - 3.6
-    - 3.7
-    - pypy
-    - pypy3.5
-
+- 2.7
+- 3.4
+- 3.5
+- 3.6
+- 3.7
+- pypy
+- pypy3.5
 matrix:
   include:
-    - python: 3.7
-      dist: xenial
-      sudo: true
-
+  - python: 3.7
+    dist: xenial
+    sudo: true
 install:
-    - python setup.py install
-    - pip install coveralls flake8 pytest pytest-cov codecov
-
+- python setup.py install
+- pip install coveralls flake8 pytest pytest-cov codecov
 before_script:
-    - flake8 bdateutil/*.py tests.py --ignore=F401,E402,F403,F405,W504
-
+- flake8 bdateutil/*.py tests.py --ignore=F401,E402,F403,F405,W504
 script:
-    - coverage run --omit=*site-packages*,*pypy*,*dateutil_tests/* tests.py
-
+- coverage run --omit=*site-packages*,*pypy*,*dateutil_tests/* tests.py
 after_success:
-    - coveralls
+- coveralls
+notifications:
+  slack:
+    secure: gbu8GURpHBE4hym5poAkex+OKW5K5PtB++46rj6C4yMuUtSdGJWd6P6D6xyJYYc0K7eEippD2ZGbjK5b8/NoKX51VC8in8btTtcu0Ez9t8mdmRchz8kdnuH0QFM2DOGnIokTtFyIDxE3dtKre0neYxPu2wWK8mKHxHiDkrH2H/x/j9x1UlDN+lrObAH2QS67N0wz6zxl3kCt1ypPyh6YlUSxaKR5tp7mN/O6LSdfSbiN94mXEONQ+AUt7AaOBpQP0ScdOXW8ngWcOdrANjamp9V/v6a+4pT5TShu/qXwFHikU8pP0Q2rlhmBiA1Udjc2Z2J281YP+kBZPiJ8VaLo+hJuLIhSI6fbpkem3+JTJf/4NNeMw5K94v9vgQMa8bH7wDSEVCAACsNs6WJwGFhHn4mC1cXkAvRlobpZJlPAGpsPXJr3Y+k5y3w51l8XIJHUxEpqYuevEFLacmaIYXfdvoeDnV7M9OVm4YodfUQgvRoadjS8Au/GqaKA98aUbHQs6Y8YcTgI890HmilxM6ejhRQkXzApBR+lhALLlUw7roUSmN24Zuxcr/65P2qxNNQJDwWzy2vlwkXyUh4iXVT5L4ZUeSLlUYqgBIDvrGOqPlaBro38AFDaXM4uJgFRBVUtGqFYBW82T2SKU5+Cpazd1ptoRBa69jYDjMOckn/vtxw=
