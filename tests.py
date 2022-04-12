@@ -14,6 +14,14 @@ from datetime import date, datetime
 
 import holidays
 
+from dateutil.tz import datetime_ambiguous, datetime_exists
+from test_dateutil_28.test_easter import *
+from test_dateutil_28.test_imports import *
+from test_dateutil_28.test_parser import *
+from test_dateutil_28.test_relativedelta import *
+from test_dateutil_28.test_rrule import *
+from test_dateutil_28.test_tz import *
+
 from bdateutil import isbday
 from bdateutil import relativedelta
 from bdateutil import parse
@@ -209,4 +217,4 @@ class TestRRule(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(failfast=True)
