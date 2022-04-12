@@ -18,10 +18,10 @@ except ImportError:
 
 setup(
     name='bdateutil',
-    version='0.3.0',
-    author='Mark Guzman',
-    author_email='segfault@hasno.info',
-    url='https://github.com/segfault/bdateutil',
+    version='0.4.0',
+    author='Tyler Copple',
+    author_email='j.tylercopple@gmail.com',
+    url='https://github.com/tcopple/bdateutil',
     license='MIT',
     packages=['bdateutil'],
     description=("Adds business day logic and improved data type flexibility "
@@ -41,6 +41,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: PyPy',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Office/Business :: Scheduling',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Software Development :: Localization',

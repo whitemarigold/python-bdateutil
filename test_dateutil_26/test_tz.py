@@ -602,7 +602,7 @@ class TzUTCTest(unittest.TestCase):
         UTC0 = tz.tzutc()
         UTC1 = tz.tzutc()
 
-        self.assertIsNot(UTC0, UTC1)
+        self.assertIs(UTC0, UTC1)
         self.assertEqual(UTC0, UTC1)
 
     def testInequality(self):

@@ -14,16 +14,13 @@ import unittest
 
 import holidays
 
-try:
-    from dateutil.tz import datetime_ambiguous, datetime_exists
-    from test_dateutil_26.test_easter import *
-    from test_dateutil_26.test_imports import *
-    from test_dateutil_26.test_parser import *
-    from test_dateutil_26.test_relativedelta import *
-    from test_dateutil_26.test_rrule import *
-    from test_dateutil_26.test_tz import *
-except ImportError:
-    from test_dateutil_22.test import *
+from dateutil.tz import datetime_ambiguous, datetime_exists
+from test_dateutil_28.test_easter import *
+from test_dateutil_28.test_imports import *
+from test_dateutil_28.test_parser import *
+from test_dateutil_28.test_relativedelta import *
+from test_dateutil_28.test_rrule import *
+from test_dateutil_28.test_tz import *
 
 import bdateutil
 from bdateutil import isbday
@@ -466,4 +463,4 @@ class TestDefaults(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(failfast=True)
