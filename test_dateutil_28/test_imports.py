@@ -7,7 +7,7 @@ except ImportError:
 
 
 class ImportEasterTest(unittest.TestCase):
-    """ Test that bdateutil.easter-related imports work properly """
+    """Test that bdateutil.easter-related imports work properly"""
 
     def testEasterDirect(self):
         import bdateutil.easter
@@ -20,7 +20,8 @@ class ImportEasterTest(unittest.TestCase):
 
 
 class ImportParserTest(unittest.TestCase):
-    """ Test that bdateutil.parser-related imports work properly """
+    """Test that bdateutil.parser-related imports work properly"""
+
     def testParserDirect(self):
         import bdateutil.parser
 
@@ -40,7 +41,8 @@ class ImportParserTest(unittest.TestCase):
 
 
 class ImportRelativeDeltaTest(unittest.TestCase):
-    """ Test that bdateutil.relativedelta-related imports work properly """
+    """Test that bdateutil.relativedelta-related imports work properly"""
+
     def testRelativeDeltaDirect(self):
         import bdateutil.relativedelta
 
@@ -56,11 +58,13 @@ class ImportRelativeDeltaTest(unittest.TestCase):
 
         # In the public interface but not in all
         from bdateutil.relativedelta import weekday
+
         self.assertIsNot(weekday, None)
 
 
 class ImportRRuleTest(unittest.TestCase):
-    """ Test that bdateutil.rrule related imports work properly """
+    """Test that bdateutil.rrule related imports work properly"""
+
     def testRRuleDirect(self):
         import bdateutil.rrule
 
@@ -75,21 +79,38 @@ class ImportRRuleTest(unittest.TestCase):
         from bdateutil.rrule import HOURLY, MINUTELY, SECONDLY
         from bdateutil.rrule import MO, TU, WE, TH, FR, SA, SU
 
-        rr_all = (rrule, rruleset, rrulestr,
-                  YEARLY, MONTHLY, WEEKLY, DAILY,
-                  HOURLY, MINUTELY, SECONDLY,
-                  MO, TU, WE, TH, FR, SA, SU)
+        rr_all = (
+            rrule,
+            rruleset,
+            rrulestr,
+            YEARLY,
+            MONTHLY,
+            WEEKLY,
+            DAILY,
+            HOURLY,
+            MINUTELY,
+            SECONDLY,
+            MO,
+            TU,
+            WE,
+            TH,
+            FR,
+            SA,
+            SU,
+        )
 
         for var in rr_all:
             self.assertIsNot(var, None)
 
         # In the public interface but not in all
         from bdateutil.rrule import weekday
+
         self.assertIsNot(weekday, None)
 
 
 class ImportTZTest(unittest.TestCase):
-    """ Test that bdateutil.tz related imports work properly """
+    """Test that bdateutil.tz related imports work properly"""
+
     def testTzDirect(self):
         import bdateutil.tz
 
@@ -108,8 +129,16 @@ class ImportTZTest(unittest.TestCase):
         from bdateutil.tz import tzwin
         from bdateutil.tz import tzwinlocal
 
-        tz_all = ["tzutc", "tzoffset", "tzlocal", "tzfile", "tzrange",
-                  "tzstr", "tzical", "gettz"]
+        tz_all = [
+            "tzutc",
+            "tzoffset",
+            "tzlocal",
+            "tzfile",
+            "tzrange",
+            "tzstr",
+            "tzical",
+            "gettz",
+        ]
 
         tz_all += ["tzwin", "tzwinlocal"] if sys.platform.startswith("win") else []
         lvars = locals()
@@ -118,9 +147,10 @@ class ImportTZTest(unittest.TestCase):
             self.assertIsNot(lvars[var], None)
 
 
-@unittest.skipUnless(sys.platform.startswith('win'), "Requires Windows")
+@unittest.skipUnless(sys.platform.startswith("win"), "Requires Windows")
 class ImportTZWinTest(unittest.TestCase):
-    """ Test that bdateutil.tzwin related imports work properly """
+    """Test that bdateutil.tzwin related imports work properly"""
+
     def testTzwinDirect(self):
         import bdateutil.tzwin
 

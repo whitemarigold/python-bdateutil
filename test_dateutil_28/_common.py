@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 try:
     import unittest2 as unittest
 except ImportError:
@@ -28,7 +29,9 @@ class WarningTestMixin(object):
             self._warning_log = []
 
         def __enter__(self, *args, **kwargs):
-            rv = super(WarningTestMixin._AssertWarnsContext, self).__enter__(*args, **kwargs)
+            rv = super(WarningTestMixin._AssertWarnsContext, self).__enter__(
+                *args, **kwargs
+            )
 
             if self._showwarning is not self._module.showwarning:
                 super_showwarning = self._module.showwarning
@@ -45,14 +48,20 @@ class WarningTestMixin(object):
             return rv
 
         def __exit__(self, *args, **kwargs):
-            super(WarningTestMixin._AssertWarnsContext, self).__exit__(self, *args, **kwargs)
+            super(WarningTestMixin._AssertWarnsContext, self).__exit__(
+                self, *args, **kwargs
+            )
 
-            self.parent.assertTrue(any(issubclass(item.category, warning)
-                                       for warning in self.expected_warnings
-                                       for item in self._warning_log))
+            self.parent.assertTrue(
+                any(
+                    issubclass(item.category, warning)
+                    for warning in self.expected_warnings
+                    for item in self._warning_log
+                )
+            )
 
     def assertWarns(self, warning, callable=None, *args, **kwargs):
-        warnings.simplefilter('always')
+        warnings.simplefilter("always")
         context = self.__class__._AssertWarnsContext(warning, self)
         if callable is None:
             return context
@@ -74,15 +83,14 @@ class PicklableMixin(object):
         Pickle and unpickle an object using ``pickle.dump`` / ``pickle.load`` on
         a temporary file.
         """
-        with tempfile.TemporaryFile('w+b') as pkl:
+        with tempfile.TemporaryFile("w+b") as pkl:
             pickle.dump(obj, pkl, **dump_kwargs)
-            pkl.seek(0)         # Reset the file to the beginning to read it
+            pkl.seek(0)  # Reset the file to the beginning to read it
             nobj = pickle.load(pkl, **load_kwargs)
 
         return nobj
 
-    def assertPicklable(self, obj, asfile=False,
-                        dump_kwargs=None, load_kwargs=None):
+    def assertPicklable(self, obj, asfile=False, dump_kwargs=None, load_kwargs=None):
         """
         Assert that an object can be pickled and unpickled. This assertion
         assumes that the desired behavior is that the unpickled object compares
@@ -107,6 +115,7 @@ class TZContextBase(object):
 
     Subclasses must define ``get_current_tz`` and ``set_current_tz``.
     """
+
     _guard_var_name = "DATEUTIL_MAY_CHANGE_TZ"
     _guard_allows_change = True
 
@@ -129,12 +138,13 @@ class TZContextBase(object):
 
     @classmethod
     def tz_change_disallowed_message(cls):
-        """ Generate instructions on how to allow tz changes """
-        msg = ('Changing time zone not allowed. Set {envar} to {gval} '
-               'if you would like to allow this behavior')
+        """Generate instructions on how to allow tz changes"""
+        msg = (
+            "Changing time zone not allowed. Set {envar} to {gval} "
+            "if you would like to allow this behavior"
+        )
 
-        return msg.format(envar=cls._guard_var_name,
-                          gval=cls._guard_allows_change)
+        return msg.format(envar=cls._guard_var_name, gval=cls._guard_allows_change)
 
     def __enter__(self):
         if not self.tz_change_allowed():
@@ -165,17 +175,18 @@ class TZEnvContext(TZContextBase):
     If you do not want the TZ environment variable set, you may set the
     ``DATEUTIL_MAY_NOT_CHANGE_TZ_VAR`` variable to a truthy value.
     """
+
     _guard_var_name = "DATEUTIL_MAY_NOT_CHANGE_TZ_VAR"
     _guard_allows_change = False
 
     def get_current_tz(self):
-        return os.environ.get('TZ', UnsetTz)
+        return os.environ.get("TZ", UnsetTz)
 
     def set_current_tz(self, tzval):
-        if tzval is UnsetTz and 'TZ' in os.environ:
-            del os.environ['TZ']
+        if tzval is UnsetTz and "TZ" in os.environ:
+            del os.environ["TZ"]
         else:
-            os.environ['TZ'] = tzval
+            os.environ["TZ"] = tzval
 
         time.tzset()
 
@@ -188,14 +199,15 @@ class TZWinContext(TZContextBase):
     unintended side effect. Set the ``DATEUTIL_MAY_CHANGE_TZ`` environment
     variable to a truthy value before using this context manager.
     """
+
     def get_current_tz(self):
-        p = subprocess.Popen(['tzutil', '/g'], stdout=subprocess.PIPE)
+        p = subprocess.Popen(["tzutil", "/g"], stdout=subprocess.PIPE)
 
         ctzname, err = p.communicate()
-        ctzname = ctzname.decode()     # Popen returns 
+        ctzname = ctzname.decode()  # Popen returns
 
         if p.returncode:
-            raise OSError('Failed to get current time zone: ' + err)
+            raise OSError("Failed to get current time zone: " + err)
 
         return ctzname
 
@@ -205,19 +217,21 @@ class TZWinContext(TZContextBase):
         out, err = p.communicate()
 
         if p.returncode:
-            raise OSError('Failed to set current time zone: ' +
-                          (err or 'Unknown error.'))
+            raise OSError(
+                "Failed to set current time zone: " + (err or "Unknown error.")
+            )
 
 
 ###
 # Compatibility functions
 
+
 def _total_seconds(td):
     # Python 2.6 doesn't have a total_seconds() method on timedelta objects
-    return ((td.seconds + td.days * 86400) * 1000000 +
-            td.microseconds) // 1000000
+    return ((td.seconds + td.days * 86400) * 1000000 + td.microseconds) // 1000000
 
-total_seconds = getattr(datetime.timedelta, 'total_seconds', _total_seconds)
+
+total_seconds = getattr(datetime.timedelta, "total_seconds", _total_seconds)
 
 
 ###
@@ -226,8 +240,9 @@ class NotAValueClass(object):
     """
     A class analogous to NaN that has operations defined for any type.
     """
+
     def _op(self, other):
-        return self             # Operation with NotAValue returns NotAValue
+        return self  # Operation with NotAValue returns NotAValue
 
     def _cmp(self, other):
         return False
@@ -244,6 +259,7 @@ class NotAValueClass(object):
     __eq__ = __req__ = _op
     __le__ = __rle__ = _op
     __ge__ = __rge__ = _op
+
 
 NotAValue = NotAValueClass()
 
@@ -278,11 +294,14 @@ class ComparesEqualClass(object):
     __rlt__ = __lt__
     __rgt__ = __gt__
 
+
 ComparesEqual = ComparesEqualClass()
 
+
 class UnsetTzClass(object):
-    """ Sentinel class for unset time zone variable """
+    """Sentinel class for unset time zone variable"""
+
     pass
 
-UnsetTz = UnsetTzClass()
 
+UnsetTz = UnsetTzClass()
