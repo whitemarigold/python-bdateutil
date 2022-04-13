@@ -1,40 +1,5 @@
+#!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-
-# Original test.py from python-dateutil-2.2
-# -----------------------------------------
-#
-# dateutil - Extensions to the standard Python datetime module.
-#
-# Copyright (c) 2003-2011 - Gustavo Niemeyer <gustavo@niemeyer.net>
-# Copyright (c) 2012 - Tomi Pieviläinen <tomi.pievilainen@iki.fi>
-#
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-#     * Redistributions of source code must retain the above copyright notice,
-#       this list of conditions and the following disclaimer.
-#     * Redistributions in binary form must reproduce the above copyright notice,
-#       this list of conditions and the following disclaimer in the documentation
-#       and/or other materials provided with the distribution.
-#     * Neither the name of the copyright holder nor the names of its
-#       contributors may be used to endorse or promote products derived from
-#       this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
 from __future__ import unicode_literals
 
 from six import StringIO, BytesIO, PY3
@@ -43,6 +8,7 @@ import calendar
 import base64
 import os
 
+from bdateutil import *
 from bdateutil.relativedelta import *
 from bdateutil.parser import *
 from bdateutil.easter import *
@@ -50,14 +16,6 @@ from bdateutil.rrule import *
 from bdateutil.tz import *
 from bdateutil import zoneinfo
 
-from datetime import *
-
-
-try:
-    long
-except:
-    # There is no `long` in Python3
-    long = int
 
 
 class RelativeDeltaTest(unittest.TestCase):
@@ -2454,24 +2412,25 @@ class RRuleTest(unittest.TestCase):
                           datetime(2010, 3, 22, 14, 1)])
 
     def testLongIntegers(self):
-        self.assertEqual(list(rrule(MINUTELY,
-                              count=long(2),
-                              interval=long(2),
-                              bymonth=long(2),
-                              byweekday=long(3),
-                              byhour=long(6),
-                              byminute=long(6),
-                              bysecond=long(6),
-                              dtstart=parse("19970902T090000"))),
-                         [datetime(1998, 2, 5, 6, 6, 6),
-                          datetime(1998, 2, 12, 6, 6, 6)])
-        self.assertEqual(list(rrule(YEARLY,
-                              count=long(2),
-                              bymonthday=long(5),
-                              byweekno=long(2),
-                              dtstart=parse("19970902T090000"))),
-                         [datetime(1998, 1, 5, 9, 0),
-                          datetime(2004, 1, 5, 9, 0)])
+        if not PY3:  # There is no longs in python3
+            self.assertEqual(list(rrule(MINUTELY,
+                                  count=long(2),
+                                  interval=long(2),
+                                  bymonth=long(2),
+                                  byweekday=long(3),
+                                  byhour=long(6),
+                                  byminute=long(6),
+                                  bysecond=long(6),
+                                  dtstart=parse("19970902T090000"))),
+                             [datetime(1998, 2, 5, 6, 6, 6),
+                              datetime(1998, 2, 12, 6, 6, 6)])
+            self.assertEqual(list(rrule(YEARLY,
+                                  count=long(2),
+                                  bymonthday=long(5),
+                                  byweekno=long(2),
+                                  dtstart=parse("19970902T090000"))),
+                             [datetime(1998, 1, 5, 9, 0),
+                              datetime(2004, 1, 5, 9, 0)])
 
     def testUntilNotMatching(self):
         self.assertEqual(list(rrule(DAILY,
@@ -3077,9 +3036,10 @@ class ParserTest(unittest.TestCase):
                                   tzinfo=self.brsttz))
 
     def testDateCommandFormatWithLong(self):
-        self.assertEqual(parse("Thu Sep 25 10:36:28 BRST 2003",
-                               tzinfos={"BRST": long(-10800)}),
-                         datetime(2003, 9, 25, 10, 36, 28,
+        if not PY3:
+            self.assertEqual(parse("Thu Sep 25 10:36:28 BRST 2003",
+                                   tzinfos={"BRST": long(-10800)}),
+                             datetime(2003, 9, 25, 10, 36, 28,
                                       tzinfo=self.brsttz))
     def testDateCommandFormatIgnoreTz(self):
         self.assertEqual(parse("Thu Sep 25 10:36:28 BRST 2003",
@@ -3681,7 +3641,7 @@ class ParserTest(unittest.TestCase):
 
     def testCustomParserInfo(self):
         # Custom parser info wasn't working, as Michael Elsdörfer discovered.
-        from dateutil.parser import parserinfo, parser
+        from bdateutil.parser import parserinfo, parser
         class myparserinfo(parserinfo):
             MONTHS = parserinfo.MONTHS[:]
             MONTHS[0] = ("Foo", "Foo")
@@ -3966,13 +3926,12 @@ END:VTIMEZONE
                          tzrange("EST", -18000, "EDT"))
 
     def testFileStart1(self):
-        tz = tzfile(BytesIO(base64.decodebytes(self.TZFILE_EST5EDT)))
+        tz = tzfile(BytesIO(base64.decodestring(self.TZFILE_EST5EDT)))
         self.assertEqual(datetime(2003, 4, 6, 1, 59, tzinfo=tz).tzname(), "EST")
         self.assertEqual(datetime(2003, 4, 6, 2, 00, tzinfo=tz).tzname(), "EDT")
 
     def testFileEnd1(self):
-        import pdb; pdb.set_trace()
-        tz = tzfile(BytesIO(base64.decodebytes(self.TZFILE_EST5EDT)))
+        tz = tzfile(BytesIO(base64.decodestring(self.TZFILE_EST5EDT)))
         self.assertEqual(datetime(2003, 10, 26, 0, 59, tzinfo=tz).tzname(), "EDT")
         self.assertEqual(datetime(2003, 10, 26, 1, 00, tzinfo=tz).tzname(), "EST")
 
@@ -4009,14 +3968,14 @@ END:VTIMEZONE
 
     def testRoundNonFullMinutes(self):
         # This timezone has an offset of 5992 seconds in 1900-01-01.
-        tz = tzfile(BytesIO(base64.decodebytes(self.EUROPE_HELSINKI)))
+        tz = tzfile(BytesIO(base64.decodestring(self.EUROPE_HELSINKI)))
         self.assertEqual(str(datetime(1900, 1, 1, 0, 0, tzinfo=tz)),
                             "1900-01-01 00:00:00+01:40")
 
     def testLeapCountDecodesProperly(self):
         # This timezone has leapcnt, and failed to decode until
         # Eugene Oden notified about the issue.
-        tz = tzfile(BytesIO(base64.decodebytes(self.NEW_YORK)))
+        tz = tzfile(BytesIO(base64.decodestring(self.NEW_YORK)))
         self.assertEqual(datetime(2007, 3, 31, 20, 12).tzname(), None)
 
     def testGettz(self):
@@ -4044,3 +4003,9 @@ END:VTIMEZONE
                           datetime(2007, 8, 6, 6, 10, tzinfo=tzstr("GMT+2")))
         self.assertEqual(dt.astimezone(tz=gettz("UTC-2")),
                           datetime(2007, 8, 6, 2, 10, tzinfo=tzstr("UTC-2")))
+
+
+if __name__ == "__main__":
+    unittest.main()
+
+# vim:ts=4:sw=4
