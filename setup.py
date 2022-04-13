@@ -17,7 +17,7 @@ except ImportError:
 
 setup(
     name="bdateutil",
-    version="0.4.1",
+    version="1.0.0",
     author="Tyler Copple",
     author_email="j.tylercopple@gmail.com",
     url="https://github.com/tcopple/bdateutil",
