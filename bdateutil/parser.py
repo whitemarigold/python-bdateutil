@@ -11,16 +11,17 @@
 
 from datetime import date, datetime, time, timedelta
 
-from dateutil.parser import *
-from dateutil.parser import parser
+from dateutil.parser import parser, parserinfo
 import six
 
 
 def parse(timestr, parserinfo=None, **kwargs):
     if getattr(timestr, "read", False):
         timestr = timestr.read()
+
     if isinstance(timestr, six.binary_type):
         timestr = timestr.decode()
+
     if isinstance(timestr, six.string_types):
         try:
             if parserinfo:
@@ -37,4 +38,5 @@ def parse(timestr, parserinfo=None, **kwargs):
         ret = timestr
     else:
         raise TypeError("Can't convert %s to date." % type(timestr))
+
     return ret
