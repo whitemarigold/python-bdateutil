@@ -58,6 +58,7 @@ class relativedelta(rd):
             else:
                 ret.bdays = self.bdays + other.bdays
             return ret
+
         ret = parse(other)
         if getattr(self, "bdays", None) is not None:
             bdays = self.bdays
@@ -67,6 +68,7 @@ class relativedelta(rd):
                 while ret.weekday() in (5, 6) or ret in self.holidays:
                     ret += rd(days=a)
                 bdays -= a
+
         return rd.__add__(self, ret)
 
     def __radd__(self, other):
@@ -85,7 +87,7 @@ class relativedelta(rd):
 
     def __neg__(self):
         bdays = -self.bdays if self.bdays is not None else None
-        return relativedelta(
+        return self.__class__(
             years=-self.years,
             months=-self.months,
             days=-self.days,
@@ -115,7 +117,7 @@ class relativedelta(rd):
     def __mul__(self, other):
         f = float(other)
         bdays = int(self.bdays * f) if self.bdays is not None else None
-        return relativedelta(
+        return self.__class__(
             years=int(self.years * f),
             months=int(self.months * f),
             days=int(self.days * f),
@@ -145,32 +147,4 @@ class relativedelta(rd):
         return not self.__eq__(other)
 
     def __repr__(self):
-        l = []
-        for attr in [
-            "years",
-            "months",
-            "days",
-            "leapdays",
-            "bdays",
-            "hours",
-            "minutes",
-            "seconds",
-            "microseconds",
-        ]:
-            value = getattr(self, attr)
-            if value:
-                l.append("%s=%+d" % (attr, value))
-        for attr in [
-            "year",
-            "month",
-            "day",
-            "weekday",
-            "hour",
-            "minute",
-            "second",
-            "microsecond",
-        ]:
-            value = getattr(self, attr)
-            if value is not None:
-                l.append("%s=%s" % (attr, repr(value)))
-        return "%s(%s)" % (self.__class__.__name__, ", ".join(l))
+        return super().__repr__()
