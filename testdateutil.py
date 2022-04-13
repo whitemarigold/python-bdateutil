@@ -3971,7 +3971,6 @@ END:VTIMEZONE
         self.assertEqual(datetime(2003, 4, 6, 2, 00, tzinfo=tz).tzname(), "EDT")
 
     def testFileEnd1(self):
-        import pdb; pdb.set_trace()
         tz = tzfile(BytesIO(base64.decodebytes(self.TZFILE_EST5EDT)))
         self.assertEqual(datetime(2003, 10, 26, 0, 59, tzinfo=tz).tzname(), "EDT")
         self.assertEqual(datetime(2003, 10, 26, 1, 00, tzinfo=tz).tzname(), "EST")
