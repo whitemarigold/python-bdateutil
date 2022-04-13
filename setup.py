@@ -26,7 +26,7 @@ setup(
     description=("Adds business day logic and improved data type flexibility "
                  "to python-dateutil."),
     long_description=open('README.rst').read(),
-    install_requires=['python-dateutil==2.2', 'holidays>=0.3.1'],
+    install_requires=['python-dateutil', 'holidays'],
     platforms='any',
     classifiers=[
         'Development Status :: 4 - Beta',
