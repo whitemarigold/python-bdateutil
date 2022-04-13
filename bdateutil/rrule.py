@@ -21,12 +21,11 @@ BDAILY = 8
 
 
 class rrule(rrulebase):
-
     def __init__(self, freq, **kwargs):
-        if 'dtstart' in kwargs:
-            kwargs['dtstart'] = parse(kwargs['dtstart'])
-        if 'until' in kwargs:
-            kwargs['until'] = parse(kwargs['until'])
+        if "dtstart" in kwargs:
+            kwargs["dtstart"] = parse(kwargs["dtstart"])
+        if "until" in kwargs:
+            kwargs["until"] = parse(kwargs["until"])
         if freq == BDAILY:
             rrulebase.__init__(self, DAILY, **kwargs)
             self._bdaily = True
@@ -55,7 +54,6 @@ class rrule(rrulebase):
 # because dateutil.rrule.rrule is not an instance of bdateutil.rrule.rrule
 # so we need to redefine rrulestr to return a bdateutil rrule object
 class _rrulestr(rrulestrbase):
-
     def _parse_rfc_rrule(self, line, **kwargs):
         ret = rrulestrbase._parse_rfc_rrule(self, line, **kwargs)
         ret.__class__ = rrule

@@ -9,7 +9,7 @@ except ImportError:
 from bdateutil import datetime, timedelta, date
 
 from bdateutil.tz import tzoffset
-from bdateutil.parser import *
+from bdateutil.parser import parse, parserinfo
 
 import six
 from six import assertRaisesRegex, PY3
